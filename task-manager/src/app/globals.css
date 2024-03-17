@@ -40,4 +40,14 @@ body {
   font-size: 4rem;
   line-height: 2.5rem;
   color: var(--text-color-main);
+
+  border-bottom: 2px solid #a1a0a0;
+  padding-bottom: 1.2rem;
+}
+.input {
+  margin: 0.5rem;
+}
+.button {
+  background-color: #339b67;
+  color: #FFFFFF;
 }
