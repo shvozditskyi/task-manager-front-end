@@ -6,6 +6,8 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --text-color-1: #7CA0A5;
+  --text-color-main: #36575B;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -17,17 +19,25 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
+  height: 100vh;
+  /* color: rgb(var(--foreground-rgb)); */
   background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    to bottom,
+    transparent,
+    rgb(var(--background-end-rgb))
+  ) rgb(var(--background-start-rgb));
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.text-1 {
+  font-family: 'Darumadrop One';
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  color: var(--text-color-1);
+  text-wrap: wrap;
+}
+.title {
+  font-family: 'Montserrat';
+  font-size: 4rem;
+  line-height: 2.5rem;
+  color: var(--text-color-main);
 }
