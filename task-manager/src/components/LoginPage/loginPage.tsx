@@ -7,11 +7,28 @@ const loginPage = () => {
     const [password, setPassword] = useState('');
 
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        //add function: sending to backend for processing with http POST request
-        console.log('Email: '+ email);
-        console.log('Password: '+ password);
+        
+        try {
+            const response = await fetch('http://localhost:8080/auth', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (response.ok) {
+                // Successful login, redirect to main page
+                console.log('Login successful');
+            } else {
+                // Handle error response (show error message)
+                console.error('Login failed');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
 
 
