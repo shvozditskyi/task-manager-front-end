@@ -1,17 +1,25 @@
 "use client"
 import { FormEvent, useState } from "react";
-
+import { useRouter } from 'next/navigation';
 const loginPage = () => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const router = useRouter();
+
+    const redirectToMainPage = () => {
+        router.push(`/MainPage`)
+    };
+    
 
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         
         try {
-            const response = await fetch('http://localhost:8080/auth', {
+            //For POST testing https://httpbin.org/post
+            const response = await fetch('https://httpbin.org/post', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -20,8 +28,13 @@ const loginPage = () => {
             });
 
             if (response.ok) {
+                // shows the response
+                // const data = await response.json();
+                // console.log(data);
+                
                 // Successful login, redirect to main page
                 console.log('Login successful');
+                redirectToMainPage();
             } else {
                 // Handle error response (show error message)
                 console.error('Login failed');
