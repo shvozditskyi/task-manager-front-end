@@ -9,14 +9,14 @@
   --text-color-1: #7CA0A5;
   --text-color-main: #36575B;
 }
-
-@media (prefers-color-scheme: dark) {
+/* for dark mode, will do later */
+/* @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
   }
-}
+} */
 
 body {
   height: 100vh;
@@ -27,7 +27,7 @@ body {
     rgb(var(--background-end-rgb))
   ) rgb(var(--background-start-rgb));
 }
-
+/* LOGIN PAGE */
 .text-1 {
   font-family: 'Darumadrop One';
   font-size: 1.25rem;
@@ -50,4 +50,32 @@ body {
 .button {
   background-color: #339b67;
   color: #FFFFFF;
+}
+
+
+/* COLUMNS */
+.column {
+  background-color: #A1C0C5;
+  border: 5px solid #A1C0C5;
+  border-radius: 0.7rem;
+}
+.column-title {
+    background-color: #3E818A;
+    display: flex;
+    justify-content: center;
+    color: rgb(207, 203, 203);
+    border: 5px solid #3E818A;
+    border-radius: 0.7rem;
+}
+
+.item-input {
+  background-color: #3E818A;
+  border: 5px solid #3E818A;
+  border-radius: 0.7rem;
+}
+.item {
+  color: rgb(207, 203, 203);
+  background-color: #3E818A;
+  border: 5px solid #3E818A;
+  border-radius: 0.7rem;
 }

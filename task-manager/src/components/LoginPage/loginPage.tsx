@@ -12,14 +12,13 @@ const loginPage = () => {
         router.push(`/MainPage`)
     };
     
-
-
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         
         try {
             //For POST testing https://httpbin.org/post
-            const response = await fetch('https://httpbin.org/post', {
+            const response = await fetch(`https://httpbin.org/post`, {
+            // const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -29,8 +28,11 @@ const loginPage = () => {
 
             if (response.ok) {
                 // shows the response
-                // const data = await response.json();
+                const data = await response.json();
+                const {accessToken, tokenType} = data;
+                sessionStorage.setItem('accessToken', `${tokenType} ${accessToken}`);
                 // console.log(data);
+                // console.log("accessToken: "+ accessToken,"token type: "+ tokenType)
                 
                 // Successful login, redirect to main page
                 console.log('Login successful');
