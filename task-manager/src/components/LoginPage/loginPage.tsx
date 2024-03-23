@@ -17,8 +17,8 @@ const loginPage = () => {
         
         try {
             //For POST testing https://httpbin.org/post
-            const response = await fetch(`https://httpbin.org/post`, {
-            // const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
+            // const response = await fetch(`https://httpbin.org/post`, {
+            const response = await fetch(`http://localhost:8080/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -48,9 +48,10 @@ const loginPage = () => {
 
 
     return (
-        <div className="login-wrapper flex justify-center mt-40">
+        <div className="login-wrapper flex justify-center mt-28">
+            <div className="header-wrapper flex flex-col justify-center items-center text-center">
             <div className="header flex flex-col justify-center items-center text-center">
-                <h2 className="text-1 max-w-48">Manage your time and keep work-life balance with</h2>
+                <h2 className="text-1 max-w-96">Manage your time and keep work-life balance with</h2>
                 <h1 className="title my-6">Task Manager</h1>
 
                 <form onSubmit={handleSubmit}>
@@ -74,8 +75,15 @@ const loginPage = () => {
                             required
                         />
                     </div>
-                    <button className="button w-full" type="submit">Login</button>
+                    <button className="submit-button w-full rounded" type="submit">Login</button>
                 </form>
+                
+            </div>
+            <div className="bottom-buttons flex space-x-8 my-4">
+                <button className="b-button">Forgot Password?</button>
+                <button className="b-button">Create Account</button>
+
+            </div>
             </div>
 
         </div>

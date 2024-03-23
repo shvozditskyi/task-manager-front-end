@@ -8,6 +8,7 @@
   --background-end-rgb: 255, 255, 255;
   --text-color-1: #7CA0A5;
   --text-color-main: #36575B;
+  --border-color: #3E818A;
 }
 /* for dark mode, will do later */
 /* @media (prefers-color-scheme: dark) {
@@ -30,26 +31,49 @@ body {
 /* LOGIN PAGE */
 .text-1 {
   font-family: 'Darumadrop One';
-  font-size: 1.25rem;
-  line-height: 1.75rem;
+  font-size: 2.5rem;
+  line-height: 2.5rem;
   color: var(--text-color-1);
   text-wrap: wrap;
 }
 .title {
   font-family: 'Montserrat';
-  font-size: 4rem;
-  line-height: 2.5rem;
+  font-size: 6rem;
+  line-height: 5rem;
   color: var(--text-color-main);
 
   border-bottom: 2px solid #a1a0a0;
   padding-bottom: 1.2rem;
 }
 .input {
-  margin: 0.5rem;
+  margin: 0.9rem;
+  padding: 0.5rem;
+  padding-right: 4rem;
+  border: 2px solid var(--text-color-1);
+  border-radius: 0.5rem;
 }
-.button {
-  background-color: #339b67;
+.submit-button {
+  background-color: #1f6d46;
   color: #FFFFFF;
+  font-size: 2rem;
+  font-family: 'Montserrat';
+  text-transform: uppercase;
+  font-size: 2rem;
+  margin-top: 1rem;
+}
+
+.header {
+  padding-bottom: 2rem;
+  border-bottom: 2px solid #a1a0a0;
+}
+
+.b-button {
+  border: 2px solid #a1a0a0;
+  border-radius: 1rem;
+  padding: 1rem;
+  text-transform: uppercase;
+  font-family: 'Montserrat';
+  color: #a1a0a0;
 }
 
 
@@ -60,22 +84,22 @@ body {
   border-radius: 0.7rem;
 }
 .column-title {
-    background-color: #3E818A;
+    background-color: var(--border-color);
     display: flex;
     justify-content: center;
     color: rgb(207, 203, 203);
-    border: 5px solid #3E818A;
+    border: 5px solid var(--border-color);
     border-radius: 0.7rem;
 }
 
 .item-input {
-  background-color: #3E818A;
-  border: 5px solid #3E818A;
+  background-color: var(--border-color);
+  border: 5px solid var(--border-color);
   border-radius: 0.7rem;
 }
 .item {
   color: rgb(207, 203, 203);
-  background-color: #3E818A;
-  border: 5px solid #3E818A;
+  background-color: var(--border-color);
+  border: 5px solid var(--border-color);
   border-radius: 0.7rem;
 }
