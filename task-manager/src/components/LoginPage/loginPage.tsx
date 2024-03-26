@@ -1,6 +1,7 @@
 "use client"
 import { FormEvent, useState } from "react";
 import { useRouter } from 'next/navigation';
+import Link from "next/link";
 const loginPage = () => {
 
     const [email, setEmail] = useState('');
@@ -11,6 +12,7 @@ const loginPage = () => {
     const redirectToMainPage = () => {
         router.push(`/MainPage`)
     };
+
     
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -81,7 +83,7 @@ const loginPage = () => {
             </div>
             <div className="bottom-buttons flex space-x-8 my-4">
                 <button className="b-button">Forgot Password?</button>
-                <button className="b-button">Create Account</button>
+                <Link href="/RegisterPage"><button className="b-button">Create Account</button></Link>
 
             </div>
             </div>
