@@ -1,8 +1,8 @@
 import Board from "../../components/MainPageComponent/board"
 
-const mainPage = () => {
+const boardPage = () => {
     return(
         <Board/>
     )
 }
-export default mainPage
+export default boardPage
