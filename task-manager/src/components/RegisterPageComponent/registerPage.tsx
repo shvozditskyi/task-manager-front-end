@@ -40,8 +40,19 @@ const registerPage = () => {
                 console.log('Registration successful');
                 redirectToLoginPage();
             } else {
-                // Handle error response (show error message)
-                console.error('Registration failed');
+                try {
+                    // Handle error response
+                    const errorData = await response.json();
+                    console.error('Registration failed');
+                    if (errorData && errorData.message) {
+                        const errorP = document.querySelector('.error')
+                    if (errorP) {
+                        errorP.innerHTML = errorData.message
+                    }
+                    }
+                } catch (error) {
+                    console.log('Error:', error)
+                }
             }
         } catch (error) {
             console.error('Error:', error);
@@ -55,7 +66,7 @@ const registerPage = () => {
             <div className="header flex flex-col justify-center items-center text-center">
                 <h2 className="text-1 max-w-96">Manage your time and keep work-life balance with</h2>
                 <h1 className="title my-6">Task Manager</h1>
-
+                <p className="error"></p>
                 <form onSubmit={handleSubmit}>
                     <div>
                         <input className="input"

@@ -76,6 +76,10 @@ body {
   color: #a1a0a0;
 }
 
+.error {
+  color: red;
+}
+
 
 /* COLUMNS */
 .column {

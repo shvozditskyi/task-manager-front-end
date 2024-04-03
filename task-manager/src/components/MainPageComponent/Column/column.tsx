@@ -34,15 +34,16 @@ const Column: React.FC<ColumnProps> = ({ title, initialItems = [] }) => {
           className="item-input w-full px-2 py-1"
         />
         {/* for now making it a button, will change it later */}
-        <button onClick={handleAddItem} className="mt-2 bg-blue-500 text-white px-4 py-1 rounded">
-          Add   
-        </button>
+        
       </div>
       <ul>
         {items.map((item) => (
           <li key={item.id} className="item py-2">{item.title}</li>
         ))}
       </ul>
+      <button onClick={handleAddItem} className="mt-2 bg-blue-500 text-white px-4 py-1 rounded">
+          Add   
+        </button>
     </div>
   );
 };

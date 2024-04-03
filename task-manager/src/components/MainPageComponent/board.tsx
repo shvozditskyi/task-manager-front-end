@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react";
-import Column from "./Column/mainPageColumn"
+import Column from "./Column/column"
 
 const mainPage = () => {
     const [columns, setColumns] = useState<string[]>(['Todo', 'In Progress', 'Done']);
