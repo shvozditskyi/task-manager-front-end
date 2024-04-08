@@ -33,8 +33,6 @@ const loginPage = () => {
                 const data = await response.json();
                 const {accessToken, tokenType} = data;
                 sessionStorage.setItem('accessToken', `${tokenType} ${accessToken}`);
-                // console.log(data);
-                // console.log("accessToken: "+ accessToken,"token type: "+ tokenType)
                 
                 // Successful login, redirect to main page
                 console.log('Login successful');

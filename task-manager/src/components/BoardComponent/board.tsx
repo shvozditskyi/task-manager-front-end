@@ -6,10 +6,38 @@ const mainPage = () => {
     const [columns, setColumns] = useState<string[]>(['Todo', 'In Progress', 'Done']);
     const [newColumnName, setNewColumnName] = useState('');
   
-    const handleAddColumn = () => {
-      if (newColumnName.trim() !== '') {
-        setColumns([...columns, newColumnName]);
-        setNewColumnName('');
+    const handleAddColumn = async () => {
+      try {
+        if (newColumnName.trim() !== '') {
+          
+          // Updating the column locally
+          setColumns([...columns, newColumnName]);
+          setNewColumnName('');
+          
+          // POST request to add column
+          const token = sessionStorage.getItem('accessToken');
+          const response = await fetch(`http://localhost:8080/api/createPrivateBoard`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `${token}`
+            },
+            body: JSON.stringify({ name: newColumnName }),
+          });
+          if (response.ok) {
+            setColumns([...columns, newColumnName]);
+            setNewColumnName('');
+          } else {
+            console.error('Failed to create column:', response.statusText);
+          }
+
+          if (!response.ok) {
+            console.log(response)
+            console.error('Failed to add column');
+          }
+        }
+      } catch (error) {
+        console.error('Error adding column:', error);
       }
     };
   

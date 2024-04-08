@@ -1,4 +1,4 @@
-import Board from "../../components/MainPageComponent/board"
+import Board from "../../components/BoardComponent/board"
 
 const boardPage = () => {
     return(
