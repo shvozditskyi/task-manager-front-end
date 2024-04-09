@@ -1,5 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
+import boardPage from '../../app/BoardPage/page';
+import Link from 'next/link';
 
 interface Board {
     id: number;
@@ -38,8 +40,9 @@ interface Board {
 
   return (
     <div>
-      <h1 className="title font-bold mt-20 flex justify-center">Choose a board</h1>
+      <h1 className="main-title font-bold mt-20 flex justify-center">Choose a board</h1>
       <div className="flex flex-row justify-center items-center">
+      <Link href={"/BoardPage"} className='border'>Go to Default Board Page</Link>
       <ul className='grid grid-cols-4 gap-4'>
         {boards.map(board => (
           <li key={board.id}>{board.name}</li>

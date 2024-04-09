@@ -58,7 +58,7 @@ const mainPage = () => {
             value={newColumnName}
             onChange={(e) => setNewColumnName(e.target.value)}
             placeholder="Enter column name..."
-            className="w-full px-2 py-1"
+            className="w-full px-2 py-1 hide"
           />
           <button onClick={handleAddColumn} className="mt-2 bg-blue-500 text-white px-4 py-1 rounded">
             Add Column

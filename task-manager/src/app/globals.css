@@ -10,6 +10,7 @@
   --text-color-main: #36575B;
   --border-color: #3E818A;
 }
+
 /* for dark mode, will do later */
 /* @media (prefers-color-scheme: dark) {
   :root {
@@ -28,7 +29,9 @@ body {
     rgb(var(--background-end-rgb))
   ) rgb(var(--background-start-rgb));
 }
+
 /* LOGIN PAGE */
+
 .text-1 {
   font-family: 'Darumadrop One';
   font-size: 2.5rem;
@@ -36,6 +39,7 @@ body {
   color: var(--text-color-1);
   text-wrap: wrap;
 }
+
 .title {
   font-family: 'Montserrat';
   font-size: 6rem;
@@ -45,6 +49,7 @@ body {
   border-bottom: 2px solid #a1a0a0;
   padding-bottom: 1.2rem;
 }
+
 .input {
   margin: 0.9rem;
   padding: 0.5rem;
@@ -52,6 +57,7 @@ body {
   border: 2px solid var(--text-color-1);
   border-radius: 0.5rem;
 }
+
 .submit-button {
   background-color: #1f6d46;
   color: #FFFFFF;
@@ -80,13 +86,14 @@ body {
   color: red;
 }
 
-
 /* COLUMNS */
+
 .column {
   background-color: #A1C0C5;
   border: 5px solid #A1C0C5;
   border-radius: 0.7rem;
 }
+
 .column-title {
     background-color: var(--border-color);
     display: flex;
@@ -101,9 +108,42 @@ body {
   border: 5px solid var(--border-color);
   border-radius: 0.7rem;
 }
+
 .item {
   color: rgb(207, 203, 203);
   background-color: var(--border-color);
   border: 5px solid var(--border-color);
   border-radius: 0.7rem;
+}
+
+.button {
+  background-color: #6bb3bd;
+  padding: 0.5rem 1rem;
+  border-radius: 3rem;
+  margin: 0 1rem;
+}
+
+.cancel {
+  background-color: #88bac0;
+  padding: 0.5rem 1rem;
+  border-radius: 3rem;
+  margin: 0 1rem;
+}
+
+/* MAIN PAGE */
+
+.main-title {
+  font-family: 'Montserrat';
+  font-size: 6rem;
+  line-height: 5rem;
+  color: var(--text-color-main);
+  padding-bottom: 1.2rem;
+}
+
+.border {
+  border: 2px solid #a1a0a0;
+  border-radius: 1rem;
+  padding: 1rem;
+  font-family: 'Montserrat';
+  color: #a1a0a0;
 }
