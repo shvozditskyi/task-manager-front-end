@@ -32,8 +32,8 @@ const registerPage = () => {
             if (response.ok) {
                 // shows the response
                 const data = await response.json();
-                const {accessToken, tokenType} = data;
-                sessionStorage.setItem('accessToken', `${tokenType} ${accessToken}`);
+                const {accessToken} = data;
+                sessionStorage.setItem('accessToken', `${accessToken}`);
                 console.log(data);
                 
                 // Successful register, redirect to main page

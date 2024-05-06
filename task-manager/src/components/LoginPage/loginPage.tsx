@@ -31,8 +31,8 @@ const loginPage = () => {
             if (response.ok) {
                 // shows the response
                 const data = await response.json();
-                const {accessToken, tokenType} = data;
-                sessionStorage.setItem('accessToken', `${tokenType} ${accessToken}`);
+                const {accessToken} = data;
+                sessionStorage.setItem('accessToken', `${accessToken}`);
                 
                 // Successful login, redirect to main page
                 console.log('Login successful');
