@@ -32,6 +32,28 @@ const Column: React.FC<ColumnProps> = ({ title, initialItems = [] }) => {
     }
   };
 
+// const handleAddItem = async () => {
+// try {
+//   const token = sessionStorage.getItem('AccessToken');
+//   const response = await fetch('http://localhost:8080/api/addItem', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       // Authorization: `${token}`,
+//     },
+//     body: JSON.stringify({title: newItemTitle}), // Assuming the backend expects an object with a title
+//   });
+//   if (!response.ok) {
+//     throw new Error("Failed to add item!")
+//   }
+//   const newItem: Item =await response.json();
+//   setItems(prevItems => [...prevItems, newItem]);
+//   setNewItemTitle('');
+//   } catch (error) {
+//     console.log("Error adding item: ", error)
+//   }
+// }
+  
   return (
     <div className="column w-80 p-4 mr-4">
       <h2 className="column-title text-2xl font-semibold mb-4">{title}</h2>

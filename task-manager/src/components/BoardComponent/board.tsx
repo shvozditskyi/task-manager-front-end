@@ -16,7 +16,7 @@ const mainPage = () => {
           
           // POST request to add column
           const token = sessionStorage.getItem('accessToken');
-          const response = await fetch(`http://localhost:8080/api/createPrivateBoard`, {
+          const response = await fetch(`http://localhost:8080/api/tasks`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -48,22 +48,40 @@ const mainPage = () => {
     // };
   
     return (
-      <div className="flex justify-center mt-8">
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="column h-dvh mt-2 w-1/12 p-4">
+          <h2 className="sidebar-title ">Other Boards</h2>
+          <button className="placeholder-button text-sm mt-2">Placeholder button</button>
+          <button className="placeholder-button text-sm mt-2">Placeholder button</button>
+          <button className="placeholder-button text-sm mt-2">Placeholder button</button>
+
+        </div>
+      <div className="flex justify-center mt-2 mx-2">
         {columns.map((columnName, index) => (
           <Column key={index} title={columnName} />
         ))}
-        <div className="w-80 p-4 mr-4">
+        <div className="flex-row justify-center items-center w-80 p-4 mr-4">
           <input
             type="text"
             value={newColumnName}
             onChange={(e) => setNewColumnName(e.target.value)}
+            onKeyUp={(e) => {
+              if (e.key === 'Enter') {
+                handleAddColumn();
+              }
+              if (e.key === "Escape") {
+                setNewColumnName("")
+              }
+            }}
             placeholder="Enter column name..."
-            className="w-full px-2 py-1 hide"
+            className="item-input w-full px-2 py-1"
           />
-          <button onClick={handleAddColumn} className="mt-2 bg-blue-500 text-white px-4 py-1 rounded">
+          <button onClick={handleAddColumn} className="column-button mt-2 px-4 py-1 text-white ">
             Add Column
           </button>
         </div>
+      </div>
       </div>
     );
   };

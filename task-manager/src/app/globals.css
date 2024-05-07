@@ -21,6 +21,7 @@
 } */
 
 body {
+  overflow: hidden;
   height: 100vh;
   /* color: rgb(var(--foreground-rgb)); */
   background: linear-gradient(
@@ -86,7 +87,7 @@ body {
   color: red;
 }
 
-/* COLUMNS */
+/* COLUMNS AND BOARD */
 
 .column {
   background-color: #A1C0C5;
@@ -123,13 +124,30 @@ body {
   margin: 0 1rem;
 }
 
+.column-button {
+  background-color: #6bb3bd;
+  border-radius: 3rem;
+}
+
 .cancel {
   background-color: #88bac0;
   padding: 0.5rem 1rem;
   border-radius: 3rem;
   margin: 0 1rem;
 }
+.sidebar-title {
+  background-color: var(--border-color);
+  border: 5px solid var(--border-color);
+  color: rgb(207, 203, 203);
+  text-align: center;
+  border-radius: 0.7rem;
+}
 
+.placeholder-button {
+    background-color: #6bb3bd;
+    padding: 0.5rem 1rem;
+    border-radius: 3rem;
+}
 /* MAIN PAGE */
 
 .main-title {

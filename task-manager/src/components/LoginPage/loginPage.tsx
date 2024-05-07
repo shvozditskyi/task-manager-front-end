@@ -10,7 +10,7 @@ const loginPage = () => {
     const router = useRouter();
 
     const redirectToMainPage = () => {
-        router.push(`/BoardPage`)
+        router.push(`/MainPage`)
     };
 
     
