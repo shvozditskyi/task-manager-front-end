@@ -2,18 +2,19 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-interface Board {
-    id: number;
-    name: string;
-    description: string;
-    isOwner: boolean;
-    isDefault: boolean;
-  }
+
+type Board = {
+  id: number;
+  name: string;
+  description: string;
+  isOwner: boolean;
+  isDefault: boolean;
+};
   
   const mainPage: React.FC = () => {
     const [boards, setBoards] = useState<Board[]>([]);
     const [newBoardName, setNewBoardName] = useState('');
-  
+
     // HTTP GET to fetch the boards
     useEffect(() => {
       const fetchBoards = async () => {
@@ -22,48 +23,57 @@ interface Board {
           const response = await fetch('http://localhost:8080/api/boards', {
             method: 'GET',
             headers: {
+              'Content-Type': 'application/json',
               Authorization: `${token}`,
             },
           });
           if (!response.ok) {
             throw new Error('Failed to fetch boards');
-          }
+          } else {
           const data = await response.json();
-          console.log(data);
+          console.log("Data: ",data);
           setBoards(data);
-          
+          }
         } catch (error) {
           console.error('Error fetching boards:', error);
         }
       };
   
       fetchBoards();
-    }, []);
+    }, []); //only renders once
 
     // HTTP POST to create a new board
+    // https://httpbin.org/post
+    // http://localhost:8080/api/boards
     const handleCreateBoard = async () => {
       try {
-          const token = sessionStorage.getItem('accessToken');
-          const response = await fetch('http://localhost:8080/api/boards', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `${token}`,
-              },
-              body: JSON.stringify({ name: newBoardName}), // Assuming backend expects a name and description field
-          });
-          if (!response.ok) {
-              throw new Error('Failed to create board');
-          }
-          const newBoard: Board = await response.json();
-          setBoards(prevBoards => [...prevBoards, newBoard]); // Add the newly created board to the list
-          setNewBoardName(''); // Reset the input field
+        // console.log("name test:", newBoardName)
+        const token = sessionStorage.getItem('accessToken');
+        const response = await fetch('http://localhost:8080/api/boards', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${token}`,
+          },
+          body: JSON.stringify({ 
+            name: newBoardName,
+          }), // only name is required
+        });
+        if (!response.ok) {
+          throw new Error('Failed to create board');
+        }
+        const responseData = await response.json(); 
+        const {name} = responseData.json;
+        const newBoard = { id: Date.now(), name, description: '', isOwner: true, isDefault: false }; // Creating newBoard
+        setBoards(prevBoards => [...prevBoards, newBoard]); // Add newBoard to boards array
+        setNewBoardName(''); // Reset input
       } catch (error) {
-          console.error('Error creating board:', error);
+        console.error('Error creating board:', error);
       }
-  };
-
-
+    };
+    useEffect(() => {
+      console.log('All boards:', boards);
+    }, [boards]);
 
   return (
     <div>
@@ -78,14 +88,22 @@ interface Board {
                 className="input px-2 py-1 ml-4"
             />
             <button onClick={handleCreateBoard} className="button ml-2">Create Board</button>
-            <ul className='grid grid-cols-4 gap-4 mt-4'>
-                {boards.map(board => (
-                    <li key={board.id}>{board.name}</li>
-                ))}
-            </ul>
-        </div>
+    <ul>
+  {boards.length > 0 ? (
+    boards.map((board, index) => (
+      <li key={index} className="mb-2">
+        {board.id} {board.name}
+      </li>
+    ))
+  ) : ( 
+      <li>No boards available</li>
+  )}
+    </ul>
     </div>
+  </div>
 );
 };
+
+
 
 export default mainPage
