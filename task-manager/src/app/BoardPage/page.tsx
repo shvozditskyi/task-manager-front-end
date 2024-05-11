@@ -1,6 +1,6 @@
 import Board from "../../components/BoardComponent/board"
 
-const boardPage = () => {
+const boardPage = () => { //for now in components
     return(
         <Board/>
     )
