@@ -1,8 +1,7 @@
 "use client"
 import { useState } from "react";
-import Column from "./Column/column"
-
-const mainPage = () => {
+import Column from "@/components/BoardComponent/Column/column";
+export default function board({params}: {params: any}) {
     const [columns, setColumns] = useState<string[]>(['Todo', 'In Progress', 'Done']);
     const [newColumnName, setNewColumnName] = useState('');
   
@@ -50,13 +49,13 @@ const mainPage = () => {
     return (
       <div className="flex">
         {/* Sidebar */}
-        <div className="column h-dvh mt-2 w-1/12 p-4">
+        <div className="column h-dvh mt-2 w-1/12 p-4 min-w-32">
           <h2 className="sidebar-title ">Other Boards</h2>
           <button className="placeholder-button text-sm mt-2">Placeholder button</button>
           <button className="placeholder-button text-sm mt-2">Placeholder button</button>
           <button className="placeholder-button text-sm mt-2">Placeholder button</button>
-
         </div>
+        {/* Main Columns */}
       <div className="flex justify-center mt-2 mx-2">
         {columns.map((columnName, index) => (
           <Column key={index} title={columnName} />
@@ -85,4 +84,3 @@ const mainPage = () => {
       </div>
     );
   };
-export default mainPage

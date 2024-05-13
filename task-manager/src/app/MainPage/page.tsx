@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-
 type Board = {
   id: number;
   name: string;
@@ -31,7 +30,7 @@ type Board = {
             throw new Error('Failed to fetch boards');
           } else {
           const data = await response.json();
-          console.log("Data: ",data);
+          // console.log("Data: ",data);
           setBoards(data);
           }
         } catch (error) {
@@ -71,9 +70,9 @@ type Board = {
         console.error('Error creating board:', error);
       }
     };
-    useEffect(() => {
-      console.log('All boards:', boards);
-    }, [boards]);
+    // useEffect(() => {
+    //   console.log('All boards:', boards);
+    // }, [boards]);
 
   return (
     <div>
@@ -92,7 +91,7 @@ type Board = {
   {boards.length > 0 ? (
     boards.map((board, index) => (
       <li key={index} className="mb-2">
-        <Link href={`/BoardPage/${board.id}`}>
+        <Link href={`/MainPage/${board.id}`}>
           {board.id} {board.name}
         </Link>
       </li>

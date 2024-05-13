@@ -21,7 +21,7 @@
 } */
 
 body {
-  overflow: hidden;
+  /* overflow: hidden; */
   height: 100vh;
   /* color: rgb(var(--foreground-rgb)); */
   background: linear-gradient(
@@ -143,10 +143,14 @@ body {
   border-radius: 0.7rem;
 }
 
-.placeholder-button {
-    background-color: #6bb3bd;
-    padding: 0.5rem 1rem;
-    border-radius: 3rem;
+.placeholder-button { 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem -0.6rem;
+  background-color: #6bb3bd;
+  padding: 0.5rem;
+  border-radius: 3rem;
 }
 /* MAIN PAGE */
 

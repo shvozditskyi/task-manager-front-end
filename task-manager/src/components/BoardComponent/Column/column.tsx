@@ -16,43 +16,54 @@ const Column: React.FC<ColumnProps> = ({ title, initialItems = [] }) => {
   const [newItemTitle, setNewItemTitle] = useState('');
   const [isInputVisible, setIsInputVisible] = useState(false);
 
-  const handleAddItem = () => {
+  // POST items
+  const handleAddItem = async () => {
+    const token = sessionStorage.getItem('accessToken');
     if (!isInputVisible) {
       // If input field is hidden, show input field
       setIsInputVisible(true);
       return;
     }
-
-    // Add new item
-    if (newItemTitle.trim() !== '') {
-      const newItems = [...items, { id: Date.now(), title: newItemTitle }];
-      setItems(newItems);
-      setNewItemTitle('');
-      setIsInputVisible(false); // Hides input field after adding item
+    try {
+      const response = await fetch(`https://httpbin.org/post`, {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json',
+        Authorization: `${token}`
+        },
+        body: JSON.stringify({name: newItemTitle})
+      })
+      if (response.ok) {
+        // Add new item
+        if (newItemTitle.trim() !== '') {
+          const newItems = [...items, { id: Date.now(), title: newItemTitle }];
+          setItems(newItems);
+          setNewItemTitle('');
+          setIsInputVisible(false); // Hides input field after adding item
+        }
+      } else {
+        const errorMessage = await response.text(); // error from response
+        console.log(`Failed to add item. Server responded with: ${errorMessage}`);
+      }
+    } catch (error) {
+      console.log("Failed to add item: ", error); // catch network or json error
     }
   };
 
-// const handleAddItem = async () => {
-// try {
-//   const token = sessionStorage.getItem('AccessToken');
-//   const response = await fetch('http://localhost:8080/api/addItem', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       // Authorization: `${token}`,
-//     },
-//     body: JSON.stringify({title: newItemTitle}), // Assuming the backend expects an object with a title
-//   });
-//   if (!response.ok) {
-//     throw new Error("Failed to add item!")
-//   }
-//   const newItem: Item =await response.json();
-//   setItems(prevItems => [...prevItems, newItem]);
-//   setNewItemTitle('');
-//   } catch (error) {
-//     console.log("Error adding item: ", error)
-//   }
-// }
+  // GET items
+  // useEffect []
+  const handleFetchItems = async () => {
+    const token = sessionStorage.getItem('accessToken')
+    const response = await fetch('http://localhost:8080/api/tasks', {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `${token}`
+      }
+    })
+    if (response.ok) {
+      // add items to columns with the correct status
+    }
+  }
   
   return (
     <div className="column w-80 p-4 mr-4">
