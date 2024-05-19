@@ -162,10 +162,32 @@ body {
   padding-bottom: 1.2rem;
 }
 
-.border {
+.d-border {
   border: 2px solid #a1a0a0;
   border-radius: 1rem;
   padding: 1rem;
   font-family: 'Montserrat';
   color: #a1a0a0;
+}
+
+.item-border {
+  border: 2px solid var(--border-color);
+  border-radius: 1rem;
+  padding: 1rem;
+  font-family: 'Montserrat';
+  color: var(--text-color-main);
+  width: 200px; 
+  height: 100px;
+  position: relative;
+  z-index: 10;
+}
+.board-items {
+  display: flex;
+  justify-content: center;
+}
+.remove-board {
+  display: flex;
+  justify-content: end;
+  position: relative;
+  z-index: 20;
 }
