@@ -106,8 +106,9 @@ body {
 
 .item-input {
   background-color: var(--border-color);
-  border: 5px solid var(--border-color);
+  border: 3px solid var(--border-color);
   border-radius: 0.7rem;
+  color: white;
 }
 
 .item {
@@ -152,6 +153,64 @@ body {
   padding: 0.5rem;
   border-radius: 3rem;
 }
+
+/* USER INVITATION WINDOWS */
+.invite-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.invite-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem -0.6rem;
+  background-color: #225726;
+  width: 250px;
+  padding: 0.5rem;
+  border-radius: 3rem;
+}
+
+.invite-button:hover {
+  background-color: #1e2e20;
+}
+
+.modal-content {
+  background-color: var(--border-color);
+  box-shadow: 0px 0px 10px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+}
+
+.invite-input {
+  color: #000;
+  border-radius: 10px;
+}
+
+.invite-input::placeholder {
+  color: #000;
+}
+
+.invite-window-button {
+  background-color: #283031;
+}
+
+button:hover {
+  transition: .2s linear;
+  background-color: #296068;
+}
+
+.invite-button.cancel {
+  background-color: rgb(172, 74, 74);
+  width: 150px;
+}
+
+.invite-button.cancel:hover {
+  background-color: rgb(163, 7, 7);
+  width: 150px;
+}
+
+
 /* MAIN PAGE */
 
 .main-title {

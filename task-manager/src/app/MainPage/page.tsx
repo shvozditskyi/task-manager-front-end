@@ -48,7 +48,7 @@ type Board = {
       try {
         // console.log("name test:", newBoardName)
         const token = sessionStorage.getItem('accessToken');
-        const response = await fetch('https://httpbin.org/post', {
+        const response = await fetch('https:/localhost:8080/api/boards', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
