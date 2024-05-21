@@ -25,13 +25,13 @@ const Column: React.FC<ColumnProps> = ({ title, initialItems = [] }) => {
       return;
     }
     try {
-      const response = await fetch(`https://httpbin.org/post`, {
+      const response = await fetch(`http://localhost:8080/api/tasks`, {
         method: 'POST',
         headers: { 'Content-type': 'application/json',
         Authorization: `${token}`
         },
-        body: JSON.stringify({name: newItemTitle})
-      })
+        body: JSON.stringify({id: Date.now(), name: newItemTitle})
+      }) //send id and name
       if (response.ok) {
         // Add new item
         if (newItemTitle.trim() !== '') {
@@ -48,22 +48,6 @@ const Column: React.FC<ColumnProps> = ({ title, initialItems = [] }) => {
       console.log("Failed to add item: ", error); // catch network or json error
     }
   };
-
-  // GET items
-  // useEffect []
-  const handleFetchItems = async () => {
-    const token = sessionStorage.getItem('accessToken')
-    const response = await fetch('http://localhost:8080/api/tasks', {
-      method: 'GET',
-      headers: {
-        'Content-type': 'application/json',
-        Authorization: `${token}`
-      }
-    })
-    if (response.ok) {
-      // add items to columns with the correct status
-    }
-  }
   
   return (
     <div className="column w-80 p-4 mr-4">

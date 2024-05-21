@@ -171,21 +171,18 @@ body {
 }
 
 .item-border {
-  border: 2px solid var(--border-color);
-  border-radius: 1rem;
-  padding: 1rem;
-  font-family: 'Montserrat';
-  color: var(--text-color-main);
-  width: 200px; 
-  height: 100px;
-  position: relative;
-  z-index: 10;
+  @apply border-2 border-current rounded-lg p-4 font-sans text-[color:var(--border-color)] relative z-10;
+  @apply sm:w-32 sm:h-12; 
+  @apply md:w-40 md:h-16; 
+  @apply lg:w-48 lg:h-20; 
+  @apply xl:w-56 xl:h-24; 
 }
+
 .board-items {
   display: flex;
   justify-content: center;
 }
-.remove-board {
+.board-menu {
   display: flex;
   justify-content: end;
   position: relative;

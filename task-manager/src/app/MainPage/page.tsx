@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 
 type Board = {
@@ -13,6 +13,8 @@ type Board = {
   const mainPage: React.FC = () => {
     const [boards, setBoards] = useState<Board[]>([]);
     const [newBoardName, setNewBoardName] = useState('');
+    const [dropdownVisible, setDropdownVisible] = useState<{ [key: number]: boolean }>({});
+    const dropdownRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
     // HTTP GET to fetch the boards
     const fetchBoards = async () => {
@@ -62,7 +64,6 @@ type Board = {
         if (!response.ok) {
           throw new Error('Failed to create board');
         }
-
         fetchBoards();
         setNewBoardName('');
       } catch (error) {
@@ -90,42 +91,114 @@ type Board = {
     }
   };
 
+  // Toggle visibility
+  const toggleDropdown = (id: number) => {
+    setDropdownVisible(prevState => ({
+      ...prevState,
+      [id]: !prevState[id],
+    }));
+  };
+
+  // Hide dropdowns
+  const hideDropdowns = () => {
+    setDropdownVisible({});
+  };
+
+  // Handle click outside dropdown and ESC
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (Object.values(dropdownRefs.current).some(ref => ref && ref.contains(target))) {
+        return;
+      }
+      hideDropdowns();
+    };
+
+    const handleEscKeyPress = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        hideDropdowns();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscKeyPress);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscKeyPress);
+    };
+  }, []);
+
   return (
     <div>
-        <h1 className="main-title font-bold mt-20 flex justify-center">Choose a board</h1>
-        <div className="flex flex-row justify-center items-center">
-            <Link href={"/BoardPage"} className='d-border'>Go to Default Board Page</Link>
-            <input
-                type="text"
-                value={newBoardName}
-                onChange={(e) => setNewBoardName(e.target.value)}
-                placeholder="Enter board name..."
-                className="input px-2 py-1 ml-4"
-            />
-            <button onClick={handleCreateBoard} className="button ml-2">Create Board</button>
+      <h1 className="main-title font-bold mt-20 flex justify-center">Choose a board</h1>
+      <div className="flex flex-row justify-center items-center">
+        <Link href={"/BoardPage"} className='d-border'>Go to Default Board Page</Link>
+        <input
+          type="text"
+          value={newBoardName}
+          onChange={(e) => setNewBoardName(e.target.value)}
+          onKeyUp={(e) => {
+            if (e.key === 'Enter') {
+              handleCreateBoard();
+            }
+          }}
+          placeholder="Enter board name..."
+          className="input px-2 py-1 ml-4"
+        />
+        <button onClick={handleCreateBoard} className="button ml-2">Create Board</button>
       </div>
       <div className='board-items'>
-    <ul className='grid grid-cols-4 justify-items-center m-2'>
-  {boards.length > 0 ? (
-    boards.map((board, index) => (
-      <li key={index} className="mb-2 item-border hover:bg-green-200 m-2">
-          <div className='grid grid-cols-4'>
-        <Link href={`/MainPage/${board.id}`} className='col-span-3'>
-            <p className='text-pretty break-words'>{board.name}</p>
-        </Link>
-            <button className='remove-board col-span-1' onClick={()=> {handleDeleteBoard(board.id)}}>
-              <img src={"/delete.png"} alt="Delete Board" className="h-6 w-6" />
-              </button>
-          </div>
-      </li>
-    ))
-  ) : ( 
-      <li className='col-span-3'>No boards available</li>
-  )}
-    </ul>
+        <ul className='grid grid-cols-4 justify-items-center m-2'>
+          {boards.length > 0 ? (
+            boards.map((board, index) => (
+              <li key={index} className="item-border mb-2 hover:bg-green-300 m-2">
+              <div className='grid grid-cols-4'>
+                <Link href={`/MainPage/${board.id}`} className='col-span-3'>
+                  <p className='text-pretty break-words'>{board.name}</p>
+                </Link>
+                <div className='relative col-span-1'>
+                  <button
+                    className='board-menu cursor-pointer'
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent triggering the Link
+                      toggleDropdown(board.id);
+                    }}
+                  >
+                    <img src={"/more.png"} alt="More Options" className="h-6 w-6 p-1 hover:bg-green-400 rounded" />
+                  </button>
+                  {dropdownVisible[board.id] && (
+                    <div ref={el => (dropdownRefs.current[board.id] = el)} className='dropdown-menu absolute right-0 top-8 bg-white border border-gray-300 rounded shadow-lg z-50'>
+                      <button
+                        className='block px-4 py-2 text-left w-full hover:bg-gray-200'
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent triggering the Link
+                          handleDeleteBoard(board.id);
+                          hideDropdowns();
+                        }}
+                      >Delete Board
+                      </button>
+                      <button
+                        className='block px-4 py-2 text-left w-full hover:bg-gray-200'
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent triggering the Link
+                          hideDropdowns();
+                        }}
+                      >Rename Board (WIP)
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+              </li>
+            ))
+          ) : (
+            <li className='col-span-3'>No boards available</li>
+          )}
+        </ul>
+      </div>
     </div>
-  </div>
-);
+  );
 };
 
 export default mainPage
