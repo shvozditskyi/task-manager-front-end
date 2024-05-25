@@ -19,12 +19,12 @@ export default function Board({ params }: { params: any }) {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          Authorization: `${token}`
         },
       });
       if (response.ok) {
         const data = await response.json();
-        setColumns(data.statuses);
+        setColumns(data.statuses); // Set columns with fetched statuses
       } else {
         console.error('Failed to fetch board details:', response.statusText);
       }
@@ -45,12 +45,12 @@ export default function Board({ params }: { params: any }) {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
+            Authorization: `${token}`
           },
           body: JSON.stringify({ name: newColumnName, orderNumber: columns.length }),
         });
         if (response.ok) {
-          fetchBoardDetails(); // Refresh columns
+          fetchBoardDetails(); // Refresh columns after adding a new one
           setNewColumnName('');
         } else {
           console.error('Failed to create column:', response.statusText);
@@ -73,7 +73,7 @@ export default function Board({ params }: { params: any }) {
       {/* Main Columns */}
       <div className="flex justify-center mt-2 mx-2">
         {columns.map((column) => (
-          <Column key={column.id} title={column.name} />
+          <Column key={column.id} boardId={params.id} columnId={column.id} title={column.name} />
         ))}
         <div className="flex-row justify-center items-center w-80 p-4 mr-4">
           <input
@@ -89,6 +89,7 @@ export default function Board({ params }: { params: any }) {
               }
             }}
             placeholder="Enter column name..."
+            
             className="item-input w-full px-2 py-1"
           />
           <button onClick={handleAddColumn} className="column-button mt-2 px-4 py-1 text-white">
@@ -98,4 +99,4 @@ export default function Board({ params }: { params: any }) {
       </div>
     </div>
   );
-};
+}

@@ -33,6 +33,8 @@ type Board = {
         const data = await response.json();
         // console.log("Data: ",data);
         const boardsData = data.map((item: any) => item.board);
+        console.log(boardsData);
+        
         setBoards(boardsData);
         }
       } catch (error) {
