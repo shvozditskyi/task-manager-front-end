@@ -8,6 +8,7 @@ type Board = {
   description: string | null;
   isOwner: boolean;
   isDefault: boolean;
+  email: string;
 };
   
   const mainPage: React.FC = () => {
@@ -32,10 +33,14 @@ type Board = {
         } else {
         const data = await response.json();
         // console.log("Data: ",data);
-        const boardsData = data.map((item: any) => item.board);
-        console.log(boardsData);
+        const boardsData = data.map((item: any) => ({
+          ...item.board,
+          email: item.board.participants?.[0].email || "no email"
+        }));
+        console.log("boards data: ",boardsData);
         
         setBoards(boardsData);
+        
         }
       } catch (error) {
         console.error('Error fetching boards:', error);
@@ -50,6 +55,7 @@ type Board = {
     // https://httpbin.org/post
     // http://localhost:8080/api/boards
     const handleCreateBoard = async () => {
+      if (newBoardName.length > 0) {
       try {
         // console.log("name test:", newBoardName)
         const token = sessionStorage.getItem('accessToken');
@@ -63,14 +69,22 @@ type Board = {
             name: newBoardName
           }), // only name is required
         });
+        let errorElement = document.querySelector(".error")!;
+        errorElement.innerHTML = ""
         if (!response.ok) {
           throw new Error('Failed to create board');
-        }
+        } else {
         fetchBoards();
         setNewBoardName('');
+        }
       } catch (error) {
         console.error('Error creating board:', error);
       }
+    } else { //error message
+      let errorElement = document.querySelector(".error")!;
+      errorElement.innerHTML = "Board needs to be at least 1 character long"
+    }
+    
     };
 
     // HTTP DELETE to remove a board
@@ -134,6 +148,8 @@ type Board = {
   return (
     <div>
       <h1 className="main-title font-bold mt-20 flex justify-center">Choose a board</h1>
+      <p className="error text-center"></p>
+      
       <div className="flex flex-row justify-center items-center">
         <Link href={"/BoardPage"} className='d-border'>Go to Default Board Page</Link>
         <input
@@ -154,14 +170,14 @@ type Board = {
         <ul className='grid grid-cols-4 justify-items-center m-2'>
           {boards.length > 0 ? (
             boards.map((board, index) => (
-              <li key={index} className="item-border mb-2 hover:bg-green-300 m-2">
+              <li key={index} className="item-border mb-2 hover:bg-green-300 m-2 relative z-10">
               <div className='grid grid-cols-4'>
                 <Link href={`/MainPage/${board.id}`} className='col-span-3'>
                   <p className='text-pretty break-words'>{board.name}</p>
                 </Link>
-                <div className='relative col-span-1'>
+                <div className='relative col-span-1 '>
                   <button
-                    className='board-menu cursor-pointer'
+                    className='board-menu cursor-pointer '
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent triggering the Link
                       toggleDropdown(board.id);
@@ -170,7 +186,7 @@ type Board = {
                     <img src={"/more.png"} alt="More Options" className="h-6 w-6 p-1 hover:bg-green-400 rounded" />
                   </button>
                   {dropdownVisible[board.id] && (
-                    <div ref={el => (dropdownRefs.current[board.id] = el)} className='dropdown-menu absolute right-0 top-8 bg-white border border-gray-300 rounded shadow-lg z-50'>
+                    <div ref={el => (dropdownRefs.current[board.id] = el)} className='dropdown-menu absolute right-0 top-8 bg-white border border-gray-300 rounded shadow-lg z-100'>
                       <button
                         className='block px-4 py-2 text-left w-full hover:bg-gray-200'
                         onClick={(e) => {
@@ -189,7 +205,8 @@ type Board = {
                       >Rename Board (WIP)
                       </button>
                     </div>
-                  )}
+                  )}  
+                  <p id='email' className='py-2 -ml-4 text-xs truncate  sm:text-clip'>{board.email}</p>
                 </div>
               </div>
               </li>
