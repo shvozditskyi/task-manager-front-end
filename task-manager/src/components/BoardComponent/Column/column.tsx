@@ -33,10 +33,15 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
 
       if (response.ok) {
         const data = await response.json();
-        console.log("column data: ",data);
+        console.log("column data: ", data);
         // Filter tasks by statusId and set to items
-        const filteredItems = data.tasks.filter((task: Item) => task.statusId === columnId);
-        setItems(filteredItems);
+        const filteredItems = data.tasks.filter((task: any) => task.statusId === columnId);
+        setItems(filteredItems.map((task: any) => ({
+          id: task.id,
+          title: task.name,
+          statusId: task.statusId
+        })));
+        console.log("filtered tasks: ", filteredItems);
       } else {
         console.error('Failed to fetch items:', response.statusText);
       }
@@ -51,12 +56,14 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
 
   // POST items
   const handleAddItem = async () => {
+  
     const token = sessionStorage.getItem('accessToken');
     if (!isInputVisible) {
       // If input field is hidden, show input field
       setIsInputVisible(true);
       return;
     }
+    if (newItemTitle.trim().length > 0) {
     try {
       const newTask = {
         name: newItemTitle,
@@ -90,7 +97,8 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
     } catch (error) {
       console.log("Failed to add item:", error);
     }
-  };
+  } else {alert("need longer item name")}
+};
 
   return (
     <div className="column w-80 p-4 mr-4">

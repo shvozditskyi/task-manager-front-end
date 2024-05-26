@@ -147,7 +147,7 @@ type Board = {
 
   return (
     <div>
-      <h1 className="main-title font-bold mt-20 flex justify-center">Choose a board</h1>
+      <h1 className="main-title font-bold mt-20 flex justify-center text-center">Choose a board</h1>
       <p className="error text-center"></p>
       
       <div className="flex flex-row justify-center items-center">
