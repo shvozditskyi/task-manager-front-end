@@ -62,11 +62,92 @@ export default function Board({ params }: { params: any }) {
         console.error('Error adding column:', error);
       }
   };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [requestMessage, setRequestMessage] = useState('');
+  const [requestType, setRequestType] = useState('');
+  const [receiverEmail, setReceiverEmail] = useState('');
+  const [boardId, setBoardId] = useState('');
+
+  const handleInviteUser = async () => {
+    try {
+        if (receiverEmail.trim() !== '' && requestMessage.trim() !== '') {
+            // POST request to invite user
+            const token = sessionStorage.getItem('accessToken');
+            const response = await fetch(`http://localhost:8080/api/boards/invite`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `${token}`
+                },
+                body: JSON.stringify({ 
+                    email: receiverEmail,
+                    message: requestMessage,
+                    type: requestType,
+                    boardId: boardId
+                }),
+            });
+            if (response.ok) {
+                alert('Invitation sent!');
+                setReceiverEmail('');
+                setRequestMessage('');
+                setRequestType('BOARD');
+                setBoardId(''); // get boardId
+                setIsModalOpen(false);
+            } else {
+                console.error('Failed to send invitation:', response.statusText);
+            }
+        } else {
+            alert('Please fill in all fields.');
+        }
+    } catch (error) {
+        console.error('Error sending invitation:', error);
+    }
+};
 
   return (
     <div className="flex">
       {/* Sidebar */}
       <div className="column h-dvh mt-2 w-1/12 p-4 min-w-32">
+        {/* Invite User Button */}
+        <button onClick={() => setIsModalOpen(true)}
+          className="invite-window-button m-2 p-1 text-white rounded"
+          >Invite User
+        </button>
+          {/* Modal */}
+          {isModalOpen && (
+                <div className="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded">
+                    <div className="modal-content bg-white p-5 rounded">
+                        <h2 className="text-xl text-center mb-4">Invite User</h2>
+                        <input
+                            type="email"
+                            value={receiverEmail}
+                            onChange={(e) => setReceiverEmail(e.target.value)}
+                            placeholder="Enter user's email..."
+                            className="invite-input w-full px-2 py-1 mb-8"
+                        />
+                        <input
+                            type="text"
+                            value={requestMessage}
+                            onChange={(e) => setRequestMessage(e.target.value)}
+                            placeholder="Enter your message..."
+                            className="invite-input w-full px-2 py-1 mb-4 h-40"
+                            style={{ textAlign: "left", verticalAlign: "top" }}
+                        />
+                        <div className="invite-buttons">
+                        <button
+                            onClick={handleInviteUser}
+                            className="invite-button px-4 py-2 text-white mr-2"
+                        >Send Invite
+                        </button>
+                        <button
+                            onClick={() => setIsModalOpen(false)}
+                            className="invite-button cancel px-4 py-2 text-white"
+                        >Cancel
+                        </button>
+                        </div>
+                    </div>
+              </div>
+          )}
         <h2 className="sidebar-title">Other Boards</h2>
         <button className="placeholder-button text-sm mt-2">Placeholder button</button>
         <button className="placeholder-button text-sm mt-2">Placeholder button</button>
