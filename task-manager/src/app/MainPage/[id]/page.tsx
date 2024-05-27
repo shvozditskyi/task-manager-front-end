@@ -11,6 +11,7 @@ interface Status {
 export default function Board({ params }: { params: any }) {
   const [columns, setColumns] = useState<Status[]>([]);
   const [newColumnName, setNewColumnName] = useState('');
+  const [boardName, setBoardName] = useState('');
 
   const fetchBoardDetails = async () => {
     try {
@@ -25,6 +26,7 @@ export default function Board({ params }: { params: any }) {
       if (response.ok) {
         const data = await response.json();
         setColumns(data.statuses); // Set columns with fetched statuses
+        console.log("Current board name: ", setBoardName(data.name));
       } else {
         console.error('Failed to fetch board details:', response.statusText);
       }
@@ -108,11 +110,14 @@ export default function Board({ params }: { params: any }) {
     <div className="flex">
       {/* Sidebar */}
       <div className="column h-dvh mt-2 w-1/12 p-4 min-w-32">
+      <h2 className="w-full text-center text-lg break-words">{boardName}</h2>
         {/* Invite User Button */}
+        <div className="flex justify-center">
         <button onClick={() => setIsModalOpen(true)}
-          className="invite-window-button m-2 p-1 text-white rounded"
+          className="invite-window-button m-2 p-1 text-white rounded w-full"
           >Invite User
         </button>
+        </div>
           {/* Modal */}
           {isModalOpen && (
                 <div className="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded">
@@ -131,7 +136,6 @@ export default function Board({ params }: { params: any }) {
                             onChange={(e) => setRequestMessage(e.target.value)}
                             placeholder="Enter your message..."
                             className="invite-input w-full px-2 py-1 mb-4 h-40"
-                            style={{ textAlign: "left", verticalAlign: "top" }}
                         />
                         <div className="invite-buttons">
                         <button

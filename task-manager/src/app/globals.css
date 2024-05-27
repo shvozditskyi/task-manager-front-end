@@ -136,6 +136,7 @@ body {
   border-radius: 3rem;
   margin: 0 1rem;
 }
+
 .sidebar-title {
   background-color: var(--border-color);
   border: 5px solid var(--border-color);
@@ -185,6 +186,8 @@ body {
 .invite-input {
   color: #000;
   border-radius: 10px;
+  text-align: start;
+  vertical-align: top;
 }
 
 .invite-input::placeholder {
@@ -192,12 +195,13 @@ body {
 }
 
 .invite-window-button {
-  background-color: var(--border-color);
+  background-color: #6bb3bd;
+  color: #000;
 }
 
 button:hover {
   transition: .2s linear;
-  background-color: #296068;
+  background-color: #387781;
 }
 
 .invite-button.cancel {
@@ -209,7 +213,6 @@ button:hover {
   background-color: rgb(163, 7, 7);
   width: 150px;
 }
-
 
 /* MAIN PAGE */
 

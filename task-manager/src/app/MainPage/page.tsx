@@ -145,13 +145,19 @@ type Board = {
     };
   }, []);
 
+  const firstBoard = boards.length > 0 ? boards[0] : null; //Will change later
+
   return (
     <div>
       <h1 className="main-title font-bold mt-20 flex justify-center text-center">Choose a board</h1>
       <p className="error text-center"></p>
-      
+
       <div className="flex flex-row justify-center items-center">
-        <Link href={"/BoardPage"} className='d-border'>Go to Default Board Page</Link>
+        {firstBoard ? (
+          <Link href={`/MainPage/${firstBoard.id}`} className='d-border'>Go to Default Board Page</Link>
+        ) : (
+          <p></p>
+        )}
         <input
           type="text"
           value={newBoardName}
@@ -171,44 +177,44 @@ type Board = {
           {boards.length > 0 ? (
             boards.map((board, index) => (
               <li key={index} className="item-border mb-2 hover:bg-green-300 m-2 relative z-10">
-              <div className='grid grid-cols-4'>
-                <Link href={`/MainPage/${board.id}`} className='col-span-3'>
-                  <p className='text-pretty break-words'>{board.name}</p>
-                </Link>
-                <div className='relative col-span-1 '>
-                  <button
-                    className='board-menu cursor-pointer '
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent triggering the Link
-                      toggleDropdown(board.id);
-                    }}
-                  >
-                    <img src={"/more.png"} alt="More Options" className="h-6 w-6 p-1 hover:bg-green-400 rounded" />
-                  </button>
-                  {dropdownVisible[board.id] && (
-                    <div ref={el => (dropdownRefs.current[board.id] = el)} className='dropdown-menu absolute right-0 top-8 bg-white border border-gray-300 rounded shadow-lg z-100'>
-                      <button
-                        className='block px-4 py-2 text-left w-full hover:bg-gray-200'
-                        onClick={(e) => {
-                          e.stopPropagation(); // Prevent triggering the Link
-                          handleDeleteBoard(board.id);
-                          hideDropdowns();
-                        }}
-                      >Delete Board
-                      </button>
-                      <button
-                        className='block px-4 py-2 text-left w-full hover:bg-gray-200'
-                        onClick={(e) => {
-                          e.stopPropagation(); // Prevent triggering the Link
-                          hideDropdowns();
-                        }}
-                      >Rename Board (WIP)
-                      </button>
-                    </div>
-                  )}  
-                  <p id='email' className='py-2 -ml-4 text-xs truncate  sm:text-clip'>{board.email}</p>
+                <div className='grid grid-cols-4'>
+                  <Link href={`/MainPage/${board.id}`} className='col-span-3'>
+                    <p className='text-pretty break-words'>{board.name}</p>
+                  </Link>
+                  <div className='relative col-span-1 '>
+                    <button
+                      className='board-menu cursor-pointer '
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent triggering the Link
+                        toggleDropdown(board.id);
+                      }}
+                    >
+                      <img src={"/more.png"} alt="More Options" className="h-6 w-6 p-1 hover:bg-green-400 rounded" />
+                    </button>
+                    {dropdownVisible[board.id] && (
+                      <div ref={el => (dropdownRefs.current[board.id] = el)} className='dropdown-menu absolute right-0 top-8 bg-white border border-gray-300 rounded shadow-lg z-100'>
+                        <button
+                          className='block px-4 py-2 text-left w-full hover:bg-gray-200'
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent triggering the Link
+                            handleDeleteBoard(board.id);
+                            hideDropdowns();
+                          }}
+                        >Delete Board
+                        </button>
+                        <button
+                          className='block px-4 py-2 text-left w-full hover:bg-gray-200'
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent triggering the Link
+                            hideDropdowns();
+                          }}
+                        >Rename Board (WIP)
+                        </button>
+                      </div>
+                    )}
+                    <p id='email' className='py-2 -ml-4 text-xs truncate sm:text-clip'>{board.email}</p>
+                  </div>
                 </div>
-              </div>
               </li>
             ))
           ) : (
