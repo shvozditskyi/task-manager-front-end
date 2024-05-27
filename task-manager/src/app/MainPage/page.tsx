@@ -55,7 +55,7 @@ type Board = {
     // https://httpbin.org/post
     // http://localhost:8080/api/boards
     const handleCreateBoard = async () => {
-      if (newBoardName.length > 0) {
+      if (newBoardName.trim() !== '') {
       try {
         // console.log("name test:", newBoardName)
         const token = sessionStorage.getItem('accessToken');

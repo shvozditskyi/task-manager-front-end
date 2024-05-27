@@ -97,7 +97,7 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
     } catch (error) {
       console.log("Failed to add item:", error);
     }
-  } else {alert("need longer item name")}
+  } else {alert("Task name needs at least 1 character")}
 };
 
   return (

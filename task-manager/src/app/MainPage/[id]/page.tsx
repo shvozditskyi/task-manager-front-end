@@ -55,10 +55,12 @@ export default function Board({ params }: { params: any }) {
         } else {
           console.error('Failed to create column:', response.statusText);
         }
+      } else {
+        alert("Column name needs at least 1 character")
       }
-    } catch (error) {
-      console.error('Error adding column:', error);
-    }
+      } catch (error) {
+        console.error('Error adding column:', error);
+      }
   };
 
   return (
