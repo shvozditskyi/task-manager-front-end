@@ -26,7 +26,7 @@ export default function Board({ params }: { params: any }) {
       if (response.ok) {
         const data = await response.json();
         setColumns(data.statuses); // Set columns with fetched statuses
-        console.log("Current board name: ", setBoardName(data.name));
+        setBoardName(data.name);
       } else {
         console.error('Failed to fetch board details:', response.statusText);
       }
@@ -64,6 +64,7 @@ export default function Board({ params }: { params: any }) {
         console.error('Error adding column:', error);
       }
   };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [requestMessage, setRequestMessage] = useState('');
   const [requestType, setRequestType] = useState('');
@@ -85,7 +86,7 @@ export default function Board({ params }: { params: any }) {
                     email: receiverEmail,
                     message: requestMessage,
                     type: requestType,
-                    boardId: boardId
+                    boardId: params.id
                 }),
             });
             if (response.ok) {
@@ -93,7 +94,6 @@ export default function Board({ params }: { params: any }) {
                 setReceiverEmail('');
                 setRequestMessage('');
                 setRequestType('BOARD');
-                setBoardId(''); // get boardId
                 setIsModalOpen(false);
             } else {
                 console.error('Failed to send invitation:', response.statusText);
@@ -110,7 +110,7 @@ export default function Board({ params }: { params: any }) {
     <div className="flex">
       {/* Sidebar */}
       <div className="column h-dvh mt-2 w-1/12 p-4 min-w-32">
-      <h2 className="w-full text-center text-lg break-words">{boardName}</h2>
+      <h2 className="w-full text-center text-lg break-words font-medium ">{boardName}</h2>
         {/* Invite User Button */}
         <div className="flex justify-center">
         <button onClick={() => setIsModalOpen(true)}
@@ -153,14 +153,17 @@ export default function Board({ params }: { params: any }) {
               </div>
           )}
         <h2 className="sidebar-title">Other Boards</h2>
-        <button className="placeholder-button text-sm mt-2">Placeholder button</button>
-        <button className="placeholder-button text-sm mt-2">Placeholder button</button>
-        <button className="placeholder-button text-sm mt-2">Placeholder button</button>
       </div>
       {/* Main Columns */}
       <div className="flex justify-center mt-2 mx-2">
         {columns.map((column) => (
-          <Column key={column.id} boardId={params.id} columnId={column.id} title={column.name} />
+          <Column 
+            key={column.id} 
+            boardId={params.id} 
+            columnId={column.id} 
+            title={column.name} 
+            columns={columns} 
+          />
         ))}
         <div className="flex-row justify-center items-center w-80 p-4 mr-4">
           <input

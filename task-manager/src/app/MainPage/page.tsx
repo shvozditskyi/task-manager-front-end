@@ -14,6 +14,7 @@ type Board = {
   const mainPage: React.FC = () => {
     const [boards, setBoards] = useState<Board[]>([]);
     const [newBoardName, setNewBoardName] = useState('');
+    const [renamingBoardId, setRenamingBoardId] = useState<number | null>(null);
     const [dropdownVisible, setDropdownVisible] = useState<{ [key: number]: boolean }>({});
     const dropdownRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
@@ -87,6 +88,33 @@ type Board = {
     
     };
 
+    const handleRenameBoard = async (boardId: number) => {
+      try {
+        const token = sessionStorage.getItem('accessToken');
+        const response = await fetch(`http://localhost:8080/api/boards/${boardId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${token}`,
+          },
+          body: JSON.stringify({ name: newBoardName }),
+        });
+        if (response.ok) {
+          setBoards(prevBoards =>
+            prevBoards.map(board =>
+              board.id === boardId ? { ...board, name: newBoardName } : board
+            )
+          );
+          setRenamingBoardId(null);
+          setNewBoardName('');
+        } else {
+          console.error('Failed to rename board:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error renaming board:', error);
+      }
+    };
+
     // HTTP DELETE to remove a board
   const handleDeleteBoard = async (id: number) => {
     try {
@@ -145,7 +173,7 @@ type Board = {
     };
   }, []);
 
-  const firstBoard = boards.length > 0 ? boards[0] : null; //Will change later
+  const firstBoard = boards.length > 0 ? boards[0] : null; //Will change later (default board)
 
   return (
     <div>
@@ -173,54 +201,68 @@ type Board = {
         <button onClick={handleCreateBoard} className="button ml-2">Create Board</button>
       </div>
       <div className='board-items'>
-        <ul className='grid grid-cols-4 justify-items-center m-2'>
-          {boards.length > 0 ? (
-            boards.map((board, index) => (
-              <li key={index} className="item-border mb-2 hover:bg-green-300 m-2 relative z-10">
-                <div className='grid grid-cols-4'>
-                  <Link href={`/MainPage/${board.id}`} className='col-span-3'>
-                    <p className='text-pretty break-words'>{board.name}</p>
-                  </Link>
-                  <div className='relative col-span-1 '>
+      <ul className='grid grid-cols-4 justify-items-center m-2'>
+      {boards.length > 0 ? (
+        boards.map((board, index) => (
+          <li key={index} className="item-border mb-2 hover:bg-green-300 m-2">
+            <div className='grid grid-cols-4'>
+              <Link href={`/MainPage/${board.id}`} className='col-span-3'>
+                {renamingBoardId === board.id ? (
+                  <input
+                    type="text"
+                    value={newBoardName}
+                    onChange={(e) => setNewBoardName(e.target.value)}
+                    onBlur={() => handleRenameBoard(board.id)}
+                    className="text-pretty break-words"
+                  />
+                ) : (
+                  <p className='text-pretty break-words'>{board.name}</p>
+                )}
+              </Link>
+              <div className='col-span-1'>
+                <button
+                  className='board-menu cursor-pointer '
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleDropdown(board.id);
+                  }}
+                >
+                  <img src={"/more.png"} alt="More Options" className="h-6 w-6 p-1 hover:bg-green-400 rounded" />
+                </button>
+                {dropdownVisible[board.id] && (
+                  <div ref={el => (dropdownRefs.current[board.id] = el)} className='dropdown-menu absolute right-0 top-2 bg-white border border-gray-300 rounded shadow-lg z-50'>
                     <button
-                      className='board-menu cursor-pointer '
+                      className='block px-4 py-2 text-left text-md w-full hover:bg-gray-200'
                       onClick={(e) => {
-                        e.stopPropagation(); // Prevent triggering the Link
-                        toggleDropdown(board.id);
+                        e.stopPropagation();
+                        handleDeleteBoard(board.id);
+                        hideDropdowns();
                       }}
                     >
-                      <img src={"/more.png"} alt="More Options" className="h-6 w-6 p-1 hover:bg-green-400 rounded" />
+                      Delete Board
                     </button>
-                    {dropdownVisible[board.id] && (
-                      <div ref={el => (dropdownRefs.current[board.id] = el)} className='dropdown-menu absolute right-0 top-8 bg-white border border-gray-300 rounded shadow-lg z-100'>
-                        <button
-                          className='block px-4 py-2 text-left w-full hover:bg-gray-200'
-                          onClick={(e) => {
-                            e.stopPropagation(); // Prevent triggering the Link
-                            handleDeleteBoard(board.id);
-                            hideDropdowns();
-                          }}
-                        >Delete Board
-                        </button>
-                        <button
-                          className='block px-4 py-2 text-left w-full hover:bg-gray-200'
-                          onClick={(e) => {
-                            e.stopPropagation(); // Prevent triggering the Link
-                            hideDropdowns();
-                          }}
-                        >Rename Board (WIP)
-                        </button>
-                      </div>
-                    )}
-                    <p id='email' className='py-2 -ml-4 text-xs truncate sm:text-clip'>{board.email}</p>
+                    <button
+                      className='block px-4 py-2 text-left text-md w-full hover:bg-gray-200'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // setRenamingBoardId(board.id);
+                        // setNewBoardName(board.name);
+                        hideDropdowns();
+                      }}
+                    >
+                      Rename Board
+                    </button>
                   </div>
-                </div>
-              </li>
-            ))
-          ) : (
-            <li className='col-span-3'>No boards available</li>
-          )}
-        </ul>
+                )}
+                <p id='email' className='py-2 -ml-4 text-xs truncate sm:text-clip'>{board.email}</p>
+              </div>
+            </div>
+          </li>
+        ))
+      ) : (
+        <li className='col-span-3'>No boards available</li>
+      )}
+    </ul>
       </div>
     </div>
   );
