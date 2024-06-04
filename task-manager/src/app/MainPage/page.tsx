@@ -14,6 +14,7 @@ type Board = {
   const mainPage: React.FC = () => {
     const [boards, setBoards] = useState<Board[]>([]);
     const [newBoardName, setNewBoardName] = useState('');
+    const [renameBoardName, setRenameBoardName] = useState('');
     const [renamingBoardId, setRenamingBoardId] = useState<number | null>(null);
     const [dropdownVisible, setDropdownVisible] = useState<{ [key: number]: boolean }>({});
     const dropdownRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
@@ -97,16 +98,16 @@ type Board = {
             'Content-Type': 'application/json',
             Authorization: `${token}`,
           },
-          body: JSON.stringify({ name: newBoardName }),
+          body: JSON.stringify({ name: renameBoardName }),
         });
         if (response.ok) {
           setBoards(prevBoards =>
             prevBoards.map(board =>
-              board.id === boardId ? { ...board, name: newBoardName } : board
+              board.id === boardId ? { ...board, name: renameBoardName } : board
             )
           );
           setRenamingBoardId(null);
-          setNewBoardName('');
+          setRenameBoardName('');
         } else {
           console.error('Failed to rename board:', response.statusText);
         }

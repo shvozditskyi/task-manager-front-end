@@ -172,7 +172,8 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
     }, []);
 
     const handleMoveItemToColumn = async (id: number, targetColumnId: number) => {
-      try {
+      if (targetColumnId !== columnId) {
+       try {
         const token = sessionStorage.getItem('accessToken');
         const response = await fetch(`http://localhost:8080/api/tasks/${id}/${targetColumnId}`, {
           method: 'POST',
@@ -190,7 +191,7 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
               const updatedTasks = [...prevTasks];
               updatedTasks[taskIndex].statusId = targetColumnId;
               setItemMoved(true);
-              // fetchItems();
+              fetchItems();
               return updatedTasks;
             }
             return prevTasks;
@@ -201,20 +202,23 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
       } catch (error) {
         console.error('Error moving item:', error);
       }
+    } else {
+      alert("cant send to the same column")
+    }
     };
 
     useEffect(() => {
       fetchItems();
     }, [columnId]);
   
-    useEffect(() => {
-      if (itemMoved) {
-        fetchItems();
-        setItemMoved(!itemMoved);
-      }
-    }, [handleMoveItemToColumn]);
+    // useEffect(() => {
+    //   if (itemMoved) {
+    //     fetchItems();
+    //     setItemMoved(!itemMoved);
+    //   }
+    // }, [handleMoveItemToColumn]);
 
-    
+
 
   return (
     <div className="column w-80 p-4 mr-4">
