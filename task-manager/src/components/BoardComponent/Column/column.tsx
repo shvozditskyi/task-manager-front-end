@@ -13,16 +13,19 @@ interface ColumnProps {
   title: string;         // title of column
   initialItems?: Item[]; // initial items in the column
   columns: { id: number, name: string }[]; // array of all columns
+  onItemMoved: any;
+  itemMoved: boolean;
+  setItemMoved: any;
 }
 
-const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems = [], columns }) => {
+const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems = [], columns, onItemMoved, itemMoved, setItemMoved }) => {
   const [items, setItems] = useState<Item[]>(initialItems); // list of items
   const [newItemTitle, setNewItemTitle] = useState('');
   const [isInputVisible, setIsInputVisible] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState<{ [key: number]: boolean }>({});
   const [moveDropdownVisible, setMoveDropdownVisible] = useState<{ [key: number]: boolean }>({});
   const dropdownRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
-  const [itemMoved, setItemMoved] = useState(false);
+  // const [itemMoved, setItemMoved] = useState(false);
 
   // Fetch items
   const fetchItems = async () => {
@@ -190,7 +193,10 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
             if (taskIndex !== -1) {
               const updatedTasks = [...prevTasks];
               updatedTasks[taskIndex].statusId = targetColumnId;
-              setItemMoved(true);
+              // setItemMoved(true);
+              console.log(onItemMoved);
+              
+              onItemMoved();
               fetchItems();
               return updatedTasks;
             }
@@ -207,18 +213,19 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
     }
     };
 
-    useEffect(() => {
-      fetchItems();
-    }, [columnId]);
-  
     // useEffect(() => {
-    //   if (itemMoved) {
-    //     fetchItems();
-    //     setItemMoved(!itemMoved);
-    //   }
-    // }, [handleMoveItemToColumn]);
+    //   fetchItems();
+    // }, [columnId]);
 
+    useEffect(() => {
+      if (itemMoved) {
+        fetchItems();
+        setItemMoved(false); // Reset itemMoved state
+      }
+    }, [itemMoved]);
 
+// Send a boolean true when MoveItem happens as prop to other column. 
+// in other column listen for the prop change and when it happens, FetchItems
 
   return (
     <div className="column w-80 p-4 mr-4">

@@ -12,6 +12,12 @@ export default function Board({ params }: { params: any }) {
   const [columns, setColumns] = useState<Status[]>([]);
   const [newColumnName, setNewColumnName] = useState('');
   const [boardName, setBoardName] = useState('');
+  const [itemMoved, setItemMoved] = useState(false);
+
+  const handleItemMoved = (columnTargetID: number) => {
+    console.log("Column to re-render: ", columnTargetID);
+    setItemMoved(true);
+  };
 
   const fetchBoardDetails = async () => {
     try {
@@ -163,6 +169,9 @@ export default function Board({ params }: { params: any }) {
             columnId={column.id} 
             title={column.name} 
             columns={columns} 
+            onItemMoved={handleItemMoved}
+            itemMoved={itemMoved}
+            setItemMoved={setItemMoved}
           />
         ))}
         <div className="flex-row justify-center items-center w-80 p-4 mr-4">
