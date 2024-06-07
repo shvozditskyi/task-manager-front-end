@@ -85,6 +85,8 @@ body {
 
 .error {
   color: red;
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
 /* COLUMNS AND BOARD */

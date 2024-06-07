@@ -25,6 +25,7 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
   const [dropdownVisible, setDropdownVisible] = useState<{ [key: number]: boolean }>({});
   const [moveDropdownVisible, setMoveDropdownVisible] = useState<{ [key: number]: boolean }>({});
   const dropdownRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+  const [errorMessage, setErrorMessage] = useState('');
   // const [itemMoved, setItemMoved] = useState(false);
 
   // Fetch items
@@ -194,8 +195,7 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
               const updatedTasks = [...prevTasks];
               updatedTasks[taskIndex].statusId = targetColumnId;
               // setItemMoved(true);
-              console.log(onItemMoved);
-              
+              setErrorMessage("")
               onItemMoved();
               fetchItems();
               return updatedTasks;
@@ -209,7 +209,7 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
         console.error('Error moving item:', error);
       }
     } else {
-      alert("cant send to the same column")
+      setErrorMessage("You can't move an item to the same Column")
     }
     };
 
@@ -326,6 +326,7 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
           </button>
         )}
       </div>
+      <p className='error text-center'>{errorMessage}</p>
     </div>
   );
 };

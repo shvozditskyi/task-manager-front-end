@@ -13,6 +13,7 @@ export default function Board({ params }: { params: any }) {
   const [newColumnName, setNewColumnName] = useState('');
   const [boardName, setBoardName] = useState('');
   const [itemMoved, setItemMoved] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("")
 
   const handleItemMoved = (columnTargetID: number) => {
     console.log("Column to re-render: ", columnTargetID);
@@ -64,7 +65,7 @@ export default function Board({ params }: { params: any }) {
           console.error('Failed to create column:', response.statusText);
         }
       } else {
-        alert("Column name needs at least 1 character")
+        setErrorMessage("Column name needs at least 1 character")
       }
       } catch (error) {
         console.error('Error adding column:', error);
@@ -105,7 +106,7 @@ export default function Board({ params }: { params: any }) {
                 console.error('Failed to send invitation:', response.statusText);
             }
         } else {
-            alert('Please fill in all fields.');
+          
         }
     } catch (error) {
         console.error('Error sending invitation:', error);
@@ -194,6 +195,7 @@ export default function Board({ params }: { params: any }) {
           <button onClick={handleAddColumn} className="column-button mt-2 px-4 py-1 text-white">
             Add Column
           </button>
+        <p className="error text-center">{errorMessage}</p>
         </div>
       </div>
     </div>
