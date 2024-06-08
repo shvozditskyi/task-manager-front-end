@@ -14,7 +14,7 @@ interface ColumnProps {
   initialItems?: Item[]; // initial items in the column
   columns: { id: number, name: string }[]; // array of all columns
   onItemMoved: any;
-  itemMoved: boolean;
+  itemMoved: boolean; 
   setItemMoved: any;
 }
 
@@ -26,7 +26,14 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
   const [moveDropdownVisible, setMoveDropdownVisible] = useState<{ [key: number]: boolean }>({});
   const dropdownRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
   const [errorMessage, setErrorMessage] = useState('');
+  const [editingColumnName, setEditingColumnName] = useState(false);
+  const [renameColumnName, setRenameColumnName] = useState(title);
   // const [itemMoved, setItemMoved] = useState(false);
+
+  const [renamingItemId, setRenamingItemId] = useState<number | null>(null);
+  const [renameItemName, setRenameItemName] = useState<string>("");
+
+
 
   // Fetch items
   const fetchItems = async () => {
@@ -105,7 +112,9 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
     } catch (error) {
       console.log("Failed to add item:", error);
     }
-  } else {alert("Task name needs at least 1 character")}
+  } else {
+    setErrorMessage("Task name needs at least 1 character");
+  }
 };
 
   // DELETE item
@@ -224,16 +233,135 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
       }
     }, [itemMoved]);
 
+    const handleRenameItem = async (itemId: number) => {
+      try {
+        const token = sessionStorage.getItem('accessToken');
+        const response = await fetch(`http://localhost:8080/api/tasks/${itemId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${token}`
+          },
+          body: JSON.stringify({ name: renameItemName }), // Send updated column name
+        });
+        if (response.ok) {
+          fetchItems()
+          setErrorMessage("")
+        } else {
+          // setErrorMessage("Rename input empty, item deleted")
+        }
+      } catch (error) {
+        console.error("Failed to rename item", error)
+      }
+    };
+  
+    const handleSaveRename = () => {
+      if (renamingItemId !== null) {
+        if (renameItemName.trim() !== '') {
+        setItems((prevItems) =>
+          prevItems.map((item) =>
+            item.id === renamingItemId ? { ...item, title: renameItemName } : item
+          )
+        );
+        setRenamingItemId(null); // Reset renaming state
+        setRenameItemName(""); // Reset the new item name input
+        } else {
+          deleteItem(renamingItemId)
+        }
+      }
+    };
+  
+    const handleColumnNameDoubleClick = () => {
+      setRenameColumnName(title); // Set input value to current column name
+      setEditingColumnName(true); // Enable edit mode
+    };
+  
+    const handleColumnNameChange = async () => {
+      try {
+        const token = sessionStorage.getItem('accessToken');
+        const response = await fetch(`http://localhost:8080/api/tasks/${columnId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${token}`
+          },
+          body: JSON.stringify({ name: renameColumnName }), // Send updated column name
+        });
+        if (response.ok) {
+          setEditingColumnName(false); // Disable edit mode
+          setRenameColumnName(renameColumnName); // Update column name in the state
+          // Optionally, you can call a function to refresh the column list from the parent component
+        } else {
+          console.error('Failed to update column name:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error updating column name:', error);
+      }
+    };
+
 // Send a boolean true when MoveItem happens as prop to other column. 
 // in other column listen for the prop change and when it happens, FetchItems
 
   return (
     <div className="column w-80 p-4 mr-4">
-      <h2 className="column-title text-2xl font-semibold mb-4">{title}</h2>
-      <ul>
-        {items.map((item) => (
-        <div className='w-full flex flex-col' key={item.id}>
-          <li className="item py-2 mb-2 flex justify-between items-center">{item.title}
+      {editingColumnName ? (
+        <input
+          type="text"
+          value={renameColumnName}
+          onChange={(e) => setRenameColumnName(e.target.value)}
+          onBlur={handleColumnNameChange} // Save changes when input loses focus
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleColumnNameChange(); // Save changes on Enter key
+            }
+            if (e.key === 'Escape') {
+              setEditingColumnName(false); // Cancel edit mode on Escape key
+            }
+          }}
+          className="column-name-input text-black"
+          autoFocus
+        />
+      ) : (
+        <h2
+          className="column-name column-title text-2xl font-semibold mb-4" 
+          onDoubleClick={handleColumnNameDoubleClick}
+        >
+          {title}
+        </h2>
+      )}
+  <ul>
+    {items.map((item) => (
+      <div className='w-full flex flex-col' key={item.id}>
+        <li className="item py-2 mb-2 flex justify-between items-center">
+          {renamingItemId === item.id ? (
+            <input
+              type="text"
+              value={renameItemName}
+              onChange={(e) => setRenameItemName(e.target.value)}
+              onBlur={handleSaveRename} // Save changes when input loses focus
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSaveRename(); // Save changes on Enter key
+                  handleRenameItem(item.id);
+                }
+                if (e.key === 'Escape') {
+                  setRenamingItemId(null); // Cancel edit mode on Escape key
+                }
+              }}
+              className="item-name-input text-black"
+              autoFocus
+            />
+          ) : (
+            <h2
+              className="item-title"
+              onDoubleClick={() => {
+                setRenamingItemId(item.id);
+                setRenameItemName(item.title); // Set the current item title as the new item name input value
+              }}
+            >
+              {item.title}
+            </h2>
+          )}
           <div className='relative'>
             <button
               className='board-menu cursor-pointer'
@@ -241,7 +369,8 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
                 e.stopPropagation(); // Prevent triggering the Link
                 toggleDropdown(item.id);
               }}
-            ><img src={"/more.png"} alt="More Options" className="h-6 w-6 p-1 hover:bg-gray-600 rounded" />
+            >
+              <img src={"/more.png"} alt="More Options" className="h-6 w-6 p-1 hover:bg-gray-600 rounded" />
             </button>
             {dropdownVisible[item.id] && (
               // style z-index fixes png visibility through dropdown
@@ -252,7 +381,7 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
                     e.stopPropagation(); // Prevent triggering the Link
                     toggleMoveDropdown(item.id);
                   }}
-                >Move to:
+                > Move to:
                   {moveDropdownVisible[item.id] && (
                     <div className='dropdown-menu absolute left-full top-0 bg-white border border-gray-300 rounded shadow-lg'>
                       {columns.map((column) => (
@@ -278,23 +407,25 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
                     deleteItem(item.id);
                     hideDropdowns();
                   }}
-                >Delete task
+                > Delete task
                 </button>
-              <button
-              className='relative block px-4 py-1 text-left w-full hover:bg-gray-200'
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent triggering the Link
-                hideDropdowns();
-              }}
-            >Rename Task (WIP)
-            </button>
+                <button
+                  className='relative block px-4 py-1 text-left w-full hover:bg-gray-200'
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering the Link
+                    setRenamingItemId(item.id);
+                    setRenameItemName(item.title);
+                    hideDropdowns();
+                  }}
+                > Rename Task
+                </button>
+              </div>
+            )}
           </div>
-        )}
-      </div>
         </li>
       </div>
-        ))}
-      </ul>
+    ))}
+  </ul>
       <div className="mb-4">
         {/* Renders input field based on isInputVisible state */}
         {isInputVisible && (
@@ -312,7 +443,7 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
               }
             }}
             placeholder="Add new item..."
-            className="item-input w-full px-2 py-1"
+            className="item-input w-full px-2 py-1 item text-black"
           />
         )}
       </div>

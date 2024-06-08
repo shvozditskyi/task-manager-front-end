@@ -203,68 +203,79 @@ type Board = {
       </div>
       <div className='board-items'>
       <ul className='grid grid-cols-4 justify-items-center m-2'>
-      {boards.length > 0 ? (
-        boards.map((board, index) => (
-          <li key={index} className="item-border mb-2 hover:bg-green-300 m-2">
-            <div className='grid grid-cols-4'>
-              <Link href={`/MainPage/${board.id}`} className='col-span-3'>
-                {renamingBoardId === board.id ? (
-                  <input
-                    type="text"
-                    value={newBoardName}
-                    onChange={(e) => setNewBoardName(e.target.value)}
-                    onBlur={() => handleRenameBoard(board.id)}
-                    className="text-pretty break-words"
-                  />
-                ) : (
-                  <p className='text-pretty break-words'>{board.name}</p>
-                )}
-              </Link>
-              <div className='col-span-1'>
-                <button
-                  className='board-menu cursor-pointer '
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleDropdown(board.id);
-                  }}
-                >
-                  <img src={"/more.png"} alt="More Options" className="h-6 w-6 p-1 hover:bg-green-400 rounded" />
-                </button>
-                {dropdownVisible[board.id] && (
-                  <div ref={el => (dropdownRefs.current[board.id] = el)} className='dropdown-menu absolute right-0 top-2 bg-white border border-gray-300 rounded shadow-lg z-50'>
-                    <button
-                      className='block px-4 py-2 text-left text-md w-full hover:bg-gray-200'
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteBoard(board.id);
-                        hideDropdowns();
+        {boards.length > 0 ? (
+          boards.map((board, index) => (
+            <li key={index} className="item-border mb-2 hover:bg-green-300 m-2">
+              <div className='grid grid-cols-4'>
+                <div className='col-span-3'>
+                  {renamingBoardId === board.id ? (
+                    <input
+                      type="text"
+                      value={renameBoardName}
+                      onChange={(e) => setRenameBoardName(e.target.value)}
+                      onBlur={() => handleRenameBoard(board.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleRenameBoard(board.id);
+                        }
+                        if (e.key === 'Escape') {
+                          setRenamingBoardId(null);
+                          setRenameBoardName('');
+                        }
                       }}
-                    >
-                      Delete Board
-                    </button>
-                    <button
-                      className='block px-4 py-2 text-left text-md w-full hover:bg-gray-200'
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        // setRenamingBoardId(board.id);
-                        // setNewBoardName(board.name);
-                        hideDropdowns();
-                      }}
-                    >
-                      Rename Board
-                    </button>
-                  </div>
-                )}
-                <p id='email' className='py-2 -ml-4 text-xs truncate sm:text-clip'>{board.email}</p>
+                      onClick={(e) => e.stopPropagation()} // Prevent navigation on input click
+                      className="text-pretty break-words"
+                      autoFocus
+                    />
+                  ) : (
+                    <Link href={`/MainPage/${board.id}`} passHref>
+                      <p className='text-pretty break-words'>{board.name}</p>
+                    </Link>
+                  )}
+                </div>
+                <div className='col-span-1'>
+                  <button
+                    className='board-menu cursor-pointer '
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleDropdown(board.id);
+                    }}
+                  >
+                    <img src={"/more.png"} alt="More Options" className="h-6 w-6 p-1 hover:bg-green-400 rounded" />
+                  </button>
+                  {dropdownVisible[board.id] && (
+                    <div ref={el => (dropdownRefs.current[board.id] = el)} className='dropdown-menu absolute right-0 top-2 bg-white border border-gray-300 rounded shadow-lg z-50'>
+                      <button
+                        className='block px-4 py-2 text-left text-md w-full hover:bg-gray-200'
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteBoard(board.id);
+                          hideDropdowns();
+                        }}
+                      > Delete Board
+                      </button>
+                      <button
+                        className='block px-4 py-2 text-left text-md w-full hover:bg-gray-200'
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRenamingBoardId(board.id);
+                          setRenameBoardName(board.name);
+                          hideDropdowns();
+                        }}
+                      > Rename Board
+                      </button>
+                    </div>
+                  )}
+                  <p id='email' className='py-2 -ml-4 text-xs truncate sm:text-clip'>{board.email}</p>
+                </div>
               </div>
-            </div>
-          </li>
-        ))
-      ) : (
-        <li className='col-span-3'>No boards available</li>
-      )}
-    </ul>
-      </div>
+            </li>
+          ))
+        ) : (
+          <li className='col-span-3'>No boards available</li>
+        )}
+      </ul>
+    </div>
     </div>
   );
 };
