@@ -76,7 +76,6 @@ export default function Board({ params }: { params: any }) {
   const [requestMessage, setRequestMessage] = useState('');
   const [requestType, setRequestType] = useState('');
   const [receiverEmail, setReceiverEmail] = useState('');
-  const [boardId, setBoardId] = useState('');
 
   const handleInviteUser = async () => {
     try {
@@ -117,6 +116,7 @@ export default function Board({ params }: { params: any }) {
     <div className="flex">
       {/* Sidebar */}
       <div className="column h-dvh mt-2 w-1/12 p-4 min-w-32">
+      <img src="/TM_logo.png" alt="logo"  height={100} width={100}/>
       <h2 className="w-full text-center text-lg break-words font-medium ">{boardName}</h2>
         {/* Invite User Button */}
         <div className="flex justify-center">

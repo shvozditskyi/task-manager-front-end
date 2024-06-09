@@ -178,12 +178,15 @@ type Board = {
 
   return (
     <div>
-      <h1 className="main-title font-bold mt-20 flex justify-center text-center">Choose a board</h1>
+      <div className='w-full flex justify-center mt-20'>
+      <img src="/TM_logo.png" alt="logo"  height={100} width={100}/>
+      </div>
+      <h1 className="main-title font-bold flex justify-center text-center">Choose a board</h1>
       <p className="error text-center"></p>
 
       <div className="flex flex-row justify-center items-center">
         {firstBoard ? (
-          <Link href={`/MainPage/${firstBoard.id}`} className='d-border'>Go to Default Board Page</Link>
+          <Link href={`/MainPage/${firstBoard.id}`} className='d-border hidden md:flex'>Go to Default Board Page</Link>
         ) : (
           <p></p>
         )}
@@ -196,13 +199,13 @@ type Board = {
               handleCreateBoard();
             }
           }}
-          placeholder="Enter board name..."
+          placeholder="Enter board name"
           className="input px-2 py-1 ml-4"
         />
         <button onClick={handleCreateBoard} className="button ml-2">Create Board</button>
       </div>
       <div className='board-items'>
-      <ul className='grid grid-cols-4 justify-items-center m-2'>
+      <ul className='grid grid-cols-3 md:grid-cols-4 justify-items-center m-2'>
         {boards.length > 0 ? (
           boards.map((board, index) => (
             <li key={index} className="item-border mb-2 hover:bg-green-300 m-2">

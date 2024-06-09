@@ -61,8 +61,9 @@ const registerPage = () => {
 
 
     return (
-        <div className="login-wrapper flex justify-center mt-20">
+        <div className="login-wrapper flex justify-center mt-12">
             <div className="header-wrapper flex flex-col justify-center items-center text-center">
+            <img src="/TM_logo.png" alt="logo"  height={100} width={100}/>
             <div className="header flex flex-col justify-center items-center text-center">
                 <h2 className="text-1 max-w-96">Manage your time and keep work-life balance with</h2>
                 <h1 className="title my-6">Task Manager</h1>

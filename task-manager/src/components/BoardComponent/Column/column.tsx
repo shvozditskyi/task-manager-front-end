@@ -374,7 +374,7 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
             </button>
             {dropdownVisible[item.id] && (
               // style z-index fixes png visibility through dropdown
-              <div ref={el => (dropdownRefs.current[item.id] = el)} className='dropdown-menu absolute right-0 top-8 bg-white border border-gray-300 rounded shadow-lg' style={{ zIndex: 10 }}>
+              <div ref={el => (dropdownRefs.current[item.id] = el)} className='dropdown-menu absolute right-0 top-8 bg-white border border-gray-300 text-black rounded shadow-lg' style={{ zIndex: 10 }}>
                 <button
                   className='block px-4 py-1 text-left w-full hover:bg-gray-200'
                   onClick={(e) => {
