@@ -10,54 +10,73 @@ type Board = {
   isDefault: boolean;
   email: string;
 };
-  
-  const mainPage: React.FC = () => {
-    const [boards, setBoards] = useState<Board[]>([]);
-    const [newBoardName, setNewBoardName] = useState('');
-    const [renameBoardName, setRenameBoardName] = useState('');
-    const [renamingBoardId, setRenamingBoardId] = useState<number | null>(null);
-    const [dropdownVisible, setDropdownVisible] = useState<{ [key: number]: boolean }>({});
-    const dropdownRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
-    // HTTP GET to fetch the boards
-    const fetchBoards = async () => {
-      try {
-        const token = sessionStorage.getItem('accessToken');
-        const response = await fetch('http://localhost:8080/api/boards', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `${token}`,
-          },
-        });
-        if (!response.ok) {
-          throw new Error('Failed to fetch boards');
-        } else {
+const mainPage: React.FC = () => {
+  const [boards, setBoards] = useState<Board[]>([]);
+  const [newBoardName, setNewBoardName] = useState('');
+  const [renameBoardName, setRenameBoardName] = useState('');
+  const [renamingBoardId, setRenamingBoardId] = useState<number | null>(null);
+  const [dropdownVisible, setDropdownVisible] = useState<{ [key: number]: boolean }>({});
+  const dropdownRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+  const [defaultBoard, setDefaultBoard] = useState<Board | null>(boards.length > 0 ? boards.find(board => board.isDefault) || boards[0] : null);
+
+
+  // HTTP GET to fetch the boards
+  const fetchBoards = async () => {
+    try {
+      const token = sessionStorage.getItem('accessToken');
+      const response = await fetch('http://localhost:8080/api/boards', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch boards');
+      } else {
         const data = await response.json();
         // console.log("Data: ",data);
         const boardsData = data.map((item: any) => ({
           ...item.board,
           email: item.board.participants?.[0].email || "no email"
         }));
-        console.log("boards data: ",boardsData);
-        
         setBoards(boardsData);
-        
-        }
-      } catch (error) {
-        console.error('Error fetching boards:', error);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching boards:', error);
+    }
+  };
 
-    useEffect(() => {
-      fetchBoards();
-    }, []); // initial render
+  const fetchDefaultBoard = async () => {
+    try {
+      const token = sessionStorage.getItem('accessToken');
+      const response = await fetch(`http://localhost:8080/api/boards/default`, {
+        headers: {
+          'Authorization': `${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setDefaultBoard(data);
+      } else {
+        console.error('Failed to fetch default board:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching default board:', error);
+    }
+  };
 
-    // HTTP POST to create a new board
-    // https://httpbin.org/post
-    // http://localhost:8080/api/boards
-    const handleCreateBoard = async () => {
-      if (newBoardName.trim() !== '') {
+  useEffect(() => {
+    fetchBoards();
+    fetchDefaultBoard();
+  }, []); // initial render
+
+  // HTTP POST to create a new board
+  // https://httpbin.org/post
+  // http://localhost:8080/api/boards
+  const handleCreateBoard = async () => {
+    if (newBoardName.trim() !== '') {
       try {
         // console.log("name test:", newBoardName)
         const token = sessionStorage.getItem('accessToken');
@@ -67,7 +86,7 @@ type Board = {
             'Content-Type': 'application/json',
             Authorization: `${token}`,
           },
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             name: newBoardName
           }), // only name is required
         });
@@ -76,8 +95,8 @@ type Board = {
         if (!response.ok) {
           throw new Error('Failed to create board');
         } else {
-        fetchBoards();
-        setNewBoardName('');
+          fetchBoards();
+          setNewBoardName('');
         }
       } catch (error) {
         console.error('Error creating board:', error);
@@ -86,37 +105,37 @@ type Board = {
       let errorElement = document.querySelector(".error")!;
       errorElement.innerHTML = "Board needs to be at least 1 character long"
     }
-    
-    };
 
-    const handleRenameBoard = async (boardId: number) => {
-      try {
-        const token = sessionStorage.getItem('accessToken');
-        const response = await fetch(`http://localhost:8080/api/boards/${boardId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `${token}`,
-          },
-          body: JSON.stringify({ name: renameBoardName }),
-        });
-        if (response.ok) {
-          setBoards(prevBoards =>
-            prevBoards.map(board =>
-              board.id === boardId ? { ...board, name: renameBoardName } : board
-            )
-          );
-          setRenamingBoardId(null);
-          setRenameBoardName('');
-        } else {
-          console.error('Failed to rename board:', response.statusText);
-        }
-      } catch (error) {
-        console.error('Error renaming board:', error);
+  };
+
+  const handleRenameBoard = async (boardId: number) => {
+    try {
+      const token = sessionStorage.getItem('accessToken');
+      const response = await fetch(`http://localhost:8080/api/boards/${boardId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify({ name: renameBoardName }),
+      });
+      if (response.ok) {
+        setBoards(prevBoards =>
+          prevBoards.map(board =>
+            board.id === boardId ? { ...board, name: renameBoardName } : board
+          )
+        );
+        setRenamingBoardId(null);
+        setRenameBoardName('');
+      } else {
+        console.error('Failed to rename board:', response.statusText);
       }
-    };
+    } catch (error) {
+      console.error('Error renaming board:', error);
+    }
+  };
 
-    // HTTP DELETE to remove a board
+  // HTTP DELETE to remove a board
   const handleDeleteBoard = async (id: number) => {
     try {
       const token = sessionStorage.getItem('accessToken');
@@ -174,19 +193,48 @@ type Board = {
     };
   }, []);
 
-  const firstBoard = boards.length > 0 ? boards[0] : null; //Will change later (default board)
+  const handleSetDefaultBoard = async (board: Board) => {
+    try {
+      const token = sessionStorage.getItem('accessToken');
+      const response = await fetch(`http://localhost:8080/api/boards/default/${board.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify({ isDefault: true })
+      });
+
+      if (response.ok) {
+        // Update the boards state to reflect the default board change
+        setDefaultBoard(board);
+        setBoards((prevBoards) =>
+          prevBoards.map((b) =>
+            b.id === board.id ? { ...b, isDefault: true } : { ...b, isDefault: false }
+          )
+        );
+      } else {
+        console.error('Failed to set default board:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error setting default board:', error);
+    }
+  };
+
 
   return (
     <div>
       <div className='w-full flex justify-center mt-20'>
-      <img src="/TM_logo.png" alt="logo"  height={100} width={100}/>
+        <img src="/TM_logo.png" alt="logo" height={100} width={100} />
       </div>
       <h1 className="main-title font-bold flex justify-center text-center">Choose a board</h1>
       <p className="error text-center"></p>
 
       <div className="flex flex-row justify-center items-center">
-        {firstBoard ? (
-          <Link href={`/MainPage/${firstBoard.id}`} className='d-border hidden md:flex'>Go to Default Board Page</Link>
+        {defaultBoard ? (
+          <Link href={`/MainPage/${defaultBoard.id}`} className='d-border hidden md:flex'>
+            Go to Default Board Page
+          </Link>
         ) : (
           <p></p>
         )}
@@ -205,80 +253,89 @@ type Board = {
         <button onClick={handleCreateBoard} className="button ml-2">Create Board</button>
       </div>
       <div className='board-items'>
-      <ul className='grid grid-cols-3 md:grid-cols-4 justify-items-center m-2'>
-        {boards.length > 0 ? (
-          boards.map((board, index) => (
-            <li key={index} className="item-border mb-2 hover:bg-green-300 m-2">
-              <div className='grid grid-cols-4'>
-                <div className='col-span-3'>
-                  {renamingBoardId === board.id ? (
-                    <input
-                      type="text"
-                      value={renameBoardName}
-                      onChange={(e) => setRenameBoardName(e.target.value)}
-                      onBlur={() => handleRenameBoard(board.id)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          handleRenameBoard(board.id);
-                        }
-                        if (e.key === 'Escape') {
-                          setRenamingBoardId(null);
-                          setRenameBoardName('');
-                        }
+        <ul className='grid grid-cols-3 md:grid-cols-4 justify-items-center m-2'>
+          {boards.length > 0 ? (
+            boards.map((board, index) => (
+              <li key={index} className="item-border mb-2 hover:bg-green-300 m-2">
+                <div className='grid grid-cols-4'>
+                  <div className='col-span-3'>
+                    {renamingBoardId === board.id ? (
+                      <input
+                        type="text"
+                        value={renameBoardName}
+                        onChange={(e) => setRenameBoardName(e.target.value)}
+                        onBlur={() => handleRenameBoard(board.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            handleRenameBoard(board.id);
+                          }
+                          if (e.key === 'Escape') {
+                            setRenamingBoardId(null);
+                            setRenameBoardName('');
+                          }
+                        }}
+                        onClick={(e) => e.stopPropagation()} // Prevent navigation on input click
+                        className="text-pretty break-words"
+                        autoFocus
+                      />
+                    ) : (
+                      <Link href={`/MainPage/${board.id}`} passHref>
+                        <p className='text-pretty break-words'>{board.name}</p>
+                      </Link>
+                    )}
+                  </div>
+                  <div className='col-span-1'>
+                    <button
+                      className='board-menu cursor-pointer '
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleDropdown(board.id);
                       }}
-                      onClick={(e) => e.stopPropagation()} // Prevent navigation on input click
-                      className="text-pretty break-words"
-                      autoFocus
-                    />
-                  ) : (
-                    <Link href={`/MainPage/${board.id}`} passHref>
-                      <p className='text-pretty break-words'>{board.name}</p>
-                    </Link>
-                  )}
+                    >
+                      <img src={"/more.png"} alt="More Options" className="h-6 w-6 p-1 hover:bg-green-400 rounded" />
+                    </button>
+                    {dropdownVisible[board.id] && (
+                      <div ref={el => (dropdownRefs.current[board.id] = el)} className='dropdown-menu absolute right-0 top-2 bg-white border border-gray-300 rounded shadow-lg z-50'>
+                        <button
+                          className='block px-4 py-2 text-left text-md w-full hover:bg-gray-200'
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteBoard(board.id);
+                            hideDropdowns();
+                          }}
+                        > Delete Board
+                        </button>
+                        <button
+                          className='block px-4 py-2 text-left text-md w-full hover:bg-gray-200'
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setRenamingBoardId(board.id);
+                            setRenameBoardName(board.name);
+                            hideDropdowns();
+                          }}
+                        > Rename Board
+                        </button>
+                        <button
+                          className='block px-4 py-2 text-left text-md w-full hover:bg-gray-200'
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSetDefaultBoard(board)
+                            hideDropdowns();
+                          }}
+                        > Set default
+                        </button>
+                      </div>
+                    )}
+                    <p id='email' className='py-2 -ml-4 text-xs truncate sm:text-clip'>{board.email}</p>
+                  </div>
                 </div>
-                <div className='col-span-1'>
-                  <button
-                    className='board-menu cursor-pointer '
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleDropdown(board.id);
-                    }}
-                  >
-                    <img src={"/more.png"} alt="More Options" className="h-6 w-6 p-1 hover:bg-green-400 rounded" />
-                  </button>
-                  {dropdownVisible[board.id] && (
-                    <div ref={el => (dropdownRefs.current[board.id] = el)} className='dropdown-menu absolute right-0 top-2 bg-white border border-gray-300 rounded shadow-lg z-50'>
-                      <button
-                        className='block px-4 py-2 text-left text-md w-full hover:bg-gray-200'
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteBoard(board.id);
-                          hideDropdowns();
-                        }}
-                      > Delete Board
-                      </button>
-                      <button
-                        className='block px-4 py-2 text-left text-md w-full hover:bg-gray-200'
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setRenamingBoardId(board.id);
-                          setRenameBoardName(board.name);
-                          hideDropdowns();
-                        }}
-                      > Rename Board
-                      </button>
-                    </div>
-                  )}
-                  <p id='email' className='py-2 -ml-4 text-xs truncate sm:text-clip'>{board.email}</p>
-                </div>
-              </div>
-            </li>
-          ))
-        ) : (
-          <li className='col-span-3'>No boards available</li>
-        )}
-      </ul>
-    </div>
+              </li>
+            ))
+          ) : (
+            <li className='col-span-3'>No boards available</li>
+          )}
+        </ul>
+      </div>
     </div>
   );
 };
