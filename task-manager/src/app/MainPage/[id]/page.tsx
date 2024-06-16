@@ -67,9 +67,9 @@ export default function Board({ params }: { params: any }) {
       } else {
         setErrorMessage("Column name needs at least 1 character")
       }
-      } catch (error) {
-        console.error('Error adding column:', error);
-      }
+    } catch (error) {
+      console.error('Error adding column:', error);
+    }
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -79,100 +79,105 @@ export default function Board({ params }: { params: any }) {
 
   const handleInviteUser = async () => {
     try {
-        if (receiverEmail.trim() !== '' && requestMessage.trim() !== '') {
-            // POST request to invite user
-            const token = sessionStorage.getItem('accessToken');
-            const response = await fetch(`http://localhost:8080/api/boards/invite`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `${token}`
-                },
-                body: JSON.stringify({ 
-                    email: receiverEmail,
-                    message: requestMessage,
-                    type: requestType,
-                    boardId: params.id
-                }),
-            });
-            if (response.ok) {
-                alert('Invitation sent!');
-                setReceiverEmail('');
-                setRequestMessage('');
-                setRequestType('BOARD');
-                setIsModalOpen(false);
-            } else {
-                console.error('Failed to send invitation:', response.statusText);
-            }
+      if (receiverEmail.trim() !== '' && requestMessage.trim() !== '') {
+        // POST request to invite user
+        const token = sessionStorage.getItem('accessToken');
+        const response = await fetch(`http://localhost:8080/api/boards/invite`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${token}`
+          },
+          body: JSON.stringify({
+            email: receiverEmail,
+            message: requestMessage,
+            type: requestType,
+            boardId: params.id
+          }),
+        });
+        if (response.ok) {
+          alert('Invitation sent!');
+          setReceiverEmail('');
+          setRequestMessage('');
+          setRequestType('BOARD');
+          setIsModalOpen(false);
         } else {
-          
+          console.error('Failed to send invitation:', response.statusText);
         }
+      } else {
+
+      }
     } catch (error) {
-        console.error('Error sending invitation:', error);
+      console.error('Error sending invitation:', error);
     }
-};
+  };
+
+  const refetchBoardDetails = () => {
+    fetchBoardDetails();
+  };
 
   return (
     <div className="flex">
       {/* Sidebar */}
       <div className="column h-dvh mt-2 w-1/12 p-4 min-w-32">
-      <img src="/TM_logo.png" alt="logo"  height={100} width={100}/>
-      <h2 className="w-full text-center text-lg break-words font-medium ">{boardName}</h2>
+        <img src="/TM_logo.png" alt="logo" height={100} width={100} />
+        <h2 className="w-full text-center text-lg break-words font-medium ">{boardName}</h2>
         {/* Invite User Button */}
         <div className="flex justify-center">
-        <button onClick={() => setIsModalOpen(true)}
-          className="invite-window-button m-2 p-1 text-white rounded w-full"
+          <button onClick={() => setIsModalOpen(true)}
+            className="invite-window-button m-2 p-1 text-white rounded w-full"
           >Invite User
-        </button>
+          </button>
         </div>
-          {/* Modal */}
-          {isModalOpen && (
-                <div className="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded">
-                    <div className="modal-content bg-white p-5 rounded">
-                        <h2 className="text-xl text-center mb-4">Invite User</h2>
-                        <input
-                            type="email"
-                            value={receiverEmail}
-                            onChange={(e) => setReceiverEmail(e.target.value)}
-                            placeholder="Enter user's email..."
-                            className="invite-input w-full px-2 py-1 mb-8"
-                        />
-                        <input
-                            type="text"
-                            value={requestMessage}
-                            onChange={(e) => setRequestMessage(e.target.value)}
-                            placeholder="Enter your message..."
-                            className="invite-input w-full px-2 py-1 mb-4 h-40"
-                        />
-                        <div className="invite-buttons">
-                        <button
-                            onClick={handleInviteUser}
-                            className="invite-button px-4 py-2 text-white mr-2"
-                        >Send Invite
-                        </button>
-                        <button
-                            onClick={() => setIsModalOpen(false)}
-                            className="invite-button cancel px-4 py-2 text-white"
-                        >Cancel
-                        </button>
-                        </div>
-                    </div>
+        {/* Modal */}
+        {isModalOpen && (
+          <div className="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded">
+            <div className="modal-content bg-white p-5 rounded">
+              <h2 className="text-xl text-center mb-4">Invite User</h2>
+              <input
+                type="email"
+                value={receiverEmail}
+                onChange={(e) => setReceiverEmail(e.target.value)}
+                placeholder="Enter user's email..."
+                className="invite-input w-full px-2 py-1 mb-8"
+              />
+              <input
+                type="text"
+                value={requestMessage}
+                onChange={(e) => setRequestMessage(e.target.value)}
+                placeholder="Enter your message..."
+                className="invite-input w-full px-2 py-1 mb-4 h-40"
+              />
+              <div className="invite-buttons">
+                <button
+                  onClick={handleInviteUser}
+                  className="invite-button px-4 py-2 text-white mr-2"
+                >Send Invite
+                </button>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="invite-button cancel px-4 py-2 text-white"
+                >Cancel
+                </button>
               </div>
-          )}
+            </div>
+          </div>
+        )}
         <h2 className="sidebar-title">Other Boards</h2>
       </div>
       {/* Main Columns */}
       <div className="flex justify-center mt-2 mx-2">
         {columns.map((column) => (
-          <Column 
-            key={column.id} 
-            boardId={params.id} 
-            columnId={column.id} 
-            title={column.name} 
-            columns={columns} 
+          <Column
+            key={column.id}
+            boardId={params.id}
+            columnId={column.id}
+            title={column.name}
+            columns={columns}
             onItemMoved={handleItemMoved}
             itemMoved={itemMoved}
             setItemMoved={setItemMoved}
+            onColumnRename={refetchBoardDetails}
           />
         ))}
         <div className="flex-row justify-center items-center w-80 p-4 mr-4">
@@ -189,13 +194,13 @@ export default function Board({ params }: { params: any }) {
               }
             }}
             placeholder="Enter column name..."
-            
+
             className="item-input w-full px-2 py-1"
           />
           <button onClick={handleAddColumn} className="column-button mt-2 px-4 py-1 text-white">
             Add Column
           </button>
-        <p className="error text-center">{errorMessage}</p>
+          <p className="error text-center">{errorMessage}</p>
         </div>
       </div>
     </div>

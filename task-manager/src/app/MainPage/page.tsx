@@ -111,13 +111,13 @@ const mainPage: React.FC = () => {
   const handleRenameBoard = async (boardId: number) => {
     try {
       const token = sessionStorage.getItem('accessToken');
-      const response = await fetch(`http://localhost:8080/api/boards/${boardId}`, {
+      const response = await fetch(`http://localhost:8080/api/boards/name?boardId=${boardId}&name=${renameBoardName}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `${token}`,
         },
-        body: JSON.stringify({ name: renameBoardName }),
+        // body: JSON.stringify({ name: renameBoardName }),
       });
       if (response.ok) {
         setBoards(prevBoards =>
