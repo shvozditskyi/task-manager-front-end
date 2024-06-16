@@ -256,7 +256,7 @@ const mainPage: React.FC = () => {
         <ul className='grid grid-cols-3 md:grid-cols-4 justify-items-center m-2'>
           {boards.length > 0 ? (
             boards.map((board, index) => (
-              <li key={index} className="item-border mb-2 hover:bg-green-300 m-2">
+              <li key={index} className="item-border mb-4 hover:bg-green-300 m-2">
                 <div className='grid grid-cols-4'>
                   <div className='col-span-3'>
                     {renamingBoardId === board.id ? (
@@ -295,7 +295,7 @@ const mainPage: React.FC = () => {
                       <img src={"/more.png"} alt="More Options" className="h-6 w-6 p-1 hover:bg-green-400 rounded" />
                     </button>
                     {dropdownVisible[board.id] && (
-                      <div ref={el => (dropdownRefs.current[board.id] = el)} className='dropdown-menu absolute right-0 top-2 bg-white border border-gray-300 rounded shadow-lg z-50'>
+                      <div ref={el => (dropdownRefs.current[board.id] = el)} className='dropdown-menu absolute right-0 -top-4 bg-white border border-gray-300 rounded shadow-lg z-50'>
                         <button
                           className='block px-4 py-2 text-left text-md w-full hover:bg-gray-200'
                           onClick={(e) => {

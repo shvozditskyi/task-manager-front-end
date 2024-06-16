@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Column from "@/components/BoardComponent/Column/column";
+import Link from "next/link";
 
 interface Status {
   id: number;
@@ -119,7 +120,7 @@ export default function Board({ params }: { params: any }) {
   return (
     <div className="flex">
       {/* Sidebar */}
-      <div className="column h-dvh mt-2 w-1/12 p-4 min-w-32">
+      <div className="column flex flex-col items-center h-dvh mt-2 w-1/12 p-4 min-w-32">
         <img src="/TM_logo.png" alt="logo" height={100} width={100} />
         <h2 className="w-full text-center text-lg break-words font-medium ">{boardName}</h2>
         {/* Invite User Button */}
@@ -163,7 +164,7 @@ export default function Board({ params }: { params: any }) {
             </div>
           </div>
         )}
-        <h2 className="sidebar-title">Other Boards</h2>
+        <button className="invite-window-button rounded mx-1"><Link href={"../MainPage"}>Back to Boards</Link></button>
       </div>
       {/* Main Columns */}
       <div className="flex justify-center mt-2 mx-2">
