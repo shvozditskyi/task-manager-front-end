@@ -135,7 +135,7 @@ export default function Board({ params }: { params: any }) {
         </div>
         {/* Modal */}
         {isModalOpen && (
-          <div className="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded">
+          <div className="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded z-50">
             <div className="modal-content bg-white p-5 rounded">
               <h2 className="text-xl text-center mb-4">Invite User</h2>
               <p className="error text-center font-bold">{inviteErrorMessage}</p>

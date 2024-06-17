@@ -50,7 +50,7 @@ const Column: React.FC<ColumnProps> = ({ boardId, columnId, title, initialItems 
 
       if (response.ok) {
         const data = await response.json();
-        console.log("column data: ", data);
+        // console.log("column data: ", data);
         // Filter tasks by statusId and set to items
         const filteredItems = data.tasks.filter((task: any) => task.statusId === columnId);
         setItems(filteredItems.map((task: any) => ({

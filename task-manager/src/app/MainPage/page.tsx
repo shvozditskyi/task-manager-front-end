@@ -311,7 +311,7 @@ const mainPage: React.FC = () => {
 
       <div className="flex flex-row justify-center items-center">
         {defaultBoard ? (
-          <Link href={`/MainPage/${defaultBoard.id}`} className='d-border hidden md:flex'>
+          <Link href={`/MainPage/${defaultBoard.id}`} className='d-border hidden md:flex hover:bg-gray-300'>
             Go to Default Board Page
           </Link>
         ) : (

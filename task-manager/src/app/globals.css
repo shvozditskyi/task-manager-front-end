@@ -69,6 +69,11 @@ body {
   margin-top: 1rem;
 }
 
+.submit-button:hover {
+  transition: .2s linear;
+  background-color: #0c4b2c;
+}
+
 .header {
   padding-bottom: 2rem;
   border-bottom: 2px solid #a1a0a0;
@@ -81,6 +86,11 @@ body {
   text-transform: uppercase;
   font-family: 'Montserrat';
   color: #a1a0a0;
+}
+
+.b-button:hover {
+  transition: .2s linear;
+  background-color: #cfcfcf;
 }
 
 .error {
@@ -130,6 +140,11 @@ body {
 .column-button {
   background-color: #6bb3bd;
   border-radius: 3rem;
+}
+
+.column-button:hover {
+  transition: .2s linear;
+  background-color: #387781;
 }
 
 .cancel {
@@ -199,6 +214,11 @@ body {
 .invite-window-button {
   background-color: #6bb3bd;
   color: #000;
+}
+
+.invite-window-button:hover {
+  transition: .2s linear;
+  background-color: #387781;
 }
 
 .button:hover {
