@@ -188,8 +188,8 @@ body {
 .invite-input {
   color: #000;
   border-radius: 10px;
-  text-align: start;
-  vertical-align: top;
+  /* text-align: start;
+  vertical-align: top; */
 }
 
 .invite-input::placeholder {
@@ -201,7 +201,7 @@ body {
   color: #000;
 }
 
-button:hover {
+.button:hover {
   transition: .2s linear;
   background-color: #387781;
 }

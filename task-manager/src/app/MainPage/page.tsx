@@ -11,6 +11,15 @@ type Board = {
   email: string;
 };
 
+interface Invite {
+  id: number;
+  requestMessage: string;
+  requestStatus: string;
+  senderEmail: string;
+  receiverEmail: string;
+  boardId: number;
+}
+
 const mainPage: React.FC = () => {
   const [boards, setBoards] = useState<Board[]>([]);
   const [newBoardName, setNewBoardName] = useState('');
@@ -19,6 +28,9 @@ const mainPage: React.FC = () => {
   const [dropdownVisible, setDropdownVisible] = useState<{ [key: number]: boolean }>({});
   const dropdownRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
   const [defaultBoard, setDefaultBoard] = useState<Board | null>(boards.length > 0 ? boards.find(board => board.isDefault) || boards[0] : null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [inviteErrorMessage, setInviteErrorMessage] = useState("")
+  const [invites, setInvites] = useState<Invite[]>([]);
 
 
   // HTTP GET to fetch the boards
@@ -221,6 +233,73 @@ const mainPage: React.FC = () => {
     }
   };
 
+  const handleFetchInvites = async () => {
+    try {
+      const token = sessionStorage.getItem('accessToken');
+      const response = await fetch(`http://localhost:8080/api/user-request`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`,
+        },
+      });
+      if (response.ok) {
+        const data: Invite[] = await response.json();
+        setInvites(data);
+        console.log(data);
+
+      } else {
+        console.error('Failed to fetch invites:', response.statusText);
+        setInviteErrorMessage('Failed to fetch invites');
+      }
+    } catch (error) {
+      console.error('Error fetching invites:', error);
+      setInviteErrorMessage('Failed to fetch invites');
+    }
+  };
+
+  const handleAcceptInvite = async (inviteId: number) => {
+    try {
+      const token = sessionStorage.getItem('accessToken');
+      const response = await fetch(`http://localhost:8080/api/user-request/manage/${inviteId}?accepted=true`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`,
+        },
+      });
+      if (response.ok) {
+        console.log(`Invite ${inviteId} accepted successfully.`);
+        fetchBoards();
+        handleFetchInvites();
+      } else {
+        console.error(`Failed to accept invite ${inviteId}:`, response.statusText);
+      }
+    } catch (error) {
+      console.error(`Error accepting invite ${inviteId}:`, error);
+    }
+  };
+
+  const handleDeleteInvite = async (inviteId: number) => {
+    try {
+      const token = sessionStorage.getItem('accessToken');
+      const response = await fetch(`http://localhost:8080/api/user-request/manage/${inviteId}?accepted=false`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${token}`,
+        },
+      });
+      if (response.ok) {
+        console.log(`Invite ${inviteId} Deleted successfully.`);
+        handleFetchInvites();
+      } else {
+        console.error(`Failed to Delete invite ${inviteId}:`, response.statusText);
+      }
+    } catch (error) {
+      console.error(`Error Deleting invite ${inviteId}:`, error);
+    }
+  };
 
   return (
     <div>
@@ -251,6 +330,49 @@ const mainPage: React.FC = () => {
           className="input px-2 py-1 ml-4"
         />
         <button onClick={handleCreateBoard} className="button ml-2">Create Board</button>
+        <button onClick={() => {
+          setIsModalOpen(true);
+          handleFetchInvites()
+        }} className="button ml-2">Show invites</button>
+        {isModalOpen && (
+          <div className="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="modal-content bg-white p-5 rounded shadow-lg">
+              <h2 className="text-xl text-center mb-4">Invite Requests</h2>
+              <p className="error text-center font-bold">{inviteErrorMessage}</p>
+              <div className='Invites'>
+                {invites.length > 0 ? (
+                  <ul>
+                    {invites.map((invite, index) => (
+                      <li key={index} className="border p-2 mb-2">
+                        <p><strong>Request Message:</strong> {invite.requestMessage}</p>
+                        <p><strong>Request Status:</strong> {invite.requestStatus}</p>
+                        <p><strong>Sender Email:</strong> {invite.senderEmail}</p>
+                        <p><strong>Board ID:</strong> {invite.boardId}</p>
+                        <div className='buttons flex justify-center gap-8'>
+                          <button className='bg-green-500 hover:bg-green-700 transition-all rounded p-1'
+                            onClick={() => handleAcceptInvite(invite.id)}>Accept</button>
+                          <button className='bg-red-500 hover:bg-red-700 transition-all rounded p-1'
+                            onClick={() => handleDeleteInvite(invite.id)}>Deny</button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No invites found</p>
+                )}
+              </div>
+              <div className="invite-buttons flex justify-center mt-4">
+                <button
+                  onClick={() => {
+                    setIsModalOpen(false);
+                  }}
+                  className="invite-button cancel px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700"
+                >Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <div className='board-items'>
         <ul className='grid grid-cols-3 md:grid-cols-4 justify-items-center m-2'>

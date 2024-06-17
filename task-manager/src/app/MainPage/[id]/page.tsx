@@ -15,6 +15,7 @@ export default function Board({ params }: { params: any }) {
   const [boardName, setBoardName] = useState('');
   const [itemMoved, setItemMoved] = useState(false);
   const [errorMessage, setErrorMessage] = useState("")
+  const [inviteErrorMessage, setInviteErrorMessage] = useState("")
 
   const handleItemMoved = (columnTargetID: number) => {
     console.log("Column to re-render: ", columnTargetID);
@@ -75,7 +76,7 @@ export default function Board({ params }: { params: any }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [requestMessage, setRequestMessage] = useState('');
-  const [requestType, setRequestType] = useState('');
+  // const [requestType, setRequestType] = useState('BOARD');
   const [receiverEmail, setReceiverEmail] = useState('');
 
   const handleInviteUser = async () => {
@@ -90,26 +91,28 @@ export default function Board({ params }: { params: any }) {
             Authorization: `${token}`
           },
           body: JSON.stringify({
-            email: receiverEmail,
-            message: requestMessage,
-            type: requestType,
+            receiverEmail: receiverEmail,
+            requestMessage: requestMessage,
+            // type: requestType,
             boardId: params.id
           }),
         });
         if (response.ok) {
-          alert('Invitation sent!');
+          setInviteErrorMessage('')
           setReceiverEmail('');
           setRequestMessage('');
-          setRequestType('BOARD');
+          // setRequestType('BOARD');
           setIsModalOpen(false);
         } else {
-          console.error('Failed to send invitation:', response.statusText);
+          console.log(receiverEmail);
+
+          setInviteErrorMessage("Failed to send invitation: " + response.statusText)
         }
       } else {
-
+        setInviteErrorMessage('Error: Incorrect Email')
       }
     } catch (error) {
-      console.error('Error sending invitation:', error);
+      setInviteErrorMessage("Error sending invitation")
     }
   };
 
@@ -135,6 +138,7 @@ export default function Board({ params }: { params: any }) {
           <div className="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded">
             <div className="modal-content bg-white p-5 rounded">
               <h2 className="text-xl text-center mb-4">Invite User</h2>
+              <p className="error text-center font-bold">{inviteErrorMessage}</p>
               <input
                 type="email"
                 value={receiverEmail}
@@ -147,7 +151,7 @@ export default function Board({ params }: { params: any }) {
                 value={requestMessage}
                 onChange={(e) => setRequestMessage(e.target.value)}
                 placeholder="Enter your message..."
-                className="invite-input w-full px-2 py-1 mb-4 h-40"
+                className="invite-input w-full text-wrap break-words max-w-full px-2 py-1 mb-4 h-40"
               />
               <div className="invite-buttons">
                 <button
@@ -156,7 +160,12 @@ export default function Board({ params }: { params: any }) {
                 >Send Invite
                 </button>
                 <button
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setReceiverEmail('');
+                    setRequestMessage('');
+                    setInviteErrorMessage('')
+                  }}
                   className="invite-button cancel px-4 py-2 text-white"
                 >Cancel
                 </button>
