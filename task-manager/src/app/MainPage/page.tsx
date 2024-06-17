@@ -333,7 +333,7 @@ const mainPage: React.FC = () => {
         <button onClick={() => {
           setIsModalOpen(true);
           handleFetchInvites()
-        }} className="button ml-2">Show invites</button>
+        }} className="button ml-2">Show Invites</button>
         {isModalOpen && (
           <div className="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="modal-content bg-white p-5 rounded shadow-lg">
@@ -345,9 +345,8 @@ const mainPage: React.FC = () => {
                     {invites.map((invite, index) => (
                       <li key={index} className="border p-2 mb-2">
                         <p><strong>Request Message:</strong> {invite.requestMessage}</p>
-                        <p><strong>Request Status:</strong> {invite.requestStatus}</p>
+                        <p><strong>Request Status:</strong> {invite.requestStatus.toLowerCase()}</p>
                         <p><strong>Sender Email:</strong> {invite.senderEmail}</p>
-                        <p><strong>Board ID:</strong> {invite.boardId}</p>
                         <div className='buttons flex justify-center gap-8'>
                           <button className='bg-green-500 hover:bg-green-700 transition-all rounded p-1'
                             onClick={() => handleAcceptInvite(invite.id)}>Accept</button>
